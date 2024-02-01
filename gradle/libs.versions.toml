@@ -29,7 +29,7 @@ androidxMetrics = "1.0.0-beta01"
 
 
 protobuf = "3.24.4"
-androidxDataStore = "1.1.0-beta01"
+androidxDataStore = "1.1.0-dev01"
 room = "2.6.1"
 secrets = "2.0.1"
 ktor = "2.3.7"
