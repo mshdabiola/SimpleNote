@@ -53,7 +53,7 @@ hilt = "2.50"
 hiltExt = "1.1.0"
 
 
-kotlinxCollectionImmutable = "0.3.5"
+kotlinxCollectionImmutable = "0.3.7"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.5.0"
 kotlinxSerializationJson = "1.6.2"
