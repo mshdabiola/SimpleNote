@@ -14,8 +14,8 @@ import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.accompanist.testharness.TestHarness
 import com.mshdabiola.designsystem.component.SkTopAppBar
-import com.mshdabiola.designsystem.icon.SkIcons
-import com.mshdabiola.designsystem.theme.SkTheme
+import com.mshdabiola.designsystem.icon.SimpleNoteIcons
+import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import com.mshdabiola.testing.util.DefaultRoborazziOptions
 import com.mshdabiola.testing.util.captureMultiTheme
 import dagger.hilt.android.testing.HiltTestApplication
@@ -51,7 +51,7 @@ class TopAppBarScreenshotTests() {
                 LocalInspectionMode provides true,
             ) {
                 TestHarness(fontScale = 2f) {
-                    SkTheme {
+                    SimpleNoteTheme {
                         NiaTopAppBarExample()
                     }
                 }
@@ -68,9 +68,9 @@ class TopAppBarScreenshotTests() {
     private fun NiaTopAppBarExample() {
         SkTopAppBar(
             titleRes = android.R.string.untitled,
-            navigationIcon = SkIcons.Search,
+            navigationIcon = SimpleNoteIcons.Search,
             navigationIconContentDescription = "Navigation icon",
-            actionIcon = SkIcons.MoreVert,
+            actionIcon = SimpleNoteIcons.MoreVert,
             actionIconContentDescription = "Action icon",
         )
     }

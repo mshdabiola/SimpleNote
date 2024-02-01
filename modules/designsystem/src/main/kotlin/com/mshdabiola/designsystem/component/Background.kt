@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.mshdabiola.designsystem.theme.GradientColors
 import com.mshdabiola.designsystem.theme.LocalBackgroundTheme
 import com.mshdabiola.designsystem.theme.LocalGradientColors
-import com.mshdabiola.designsystem.theme.SkTheme
+import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import kotlin.math.tan
 
 /**
@@ -62,7 +62,7 @@ fun SkBackground(
  * @param content The background content.
  */
 @Composable
-fun SkGradientBackground(
+fun SimpleNoteGradientBackground(
     modifier: Modifier = Modifier,
     gradientColors: GradientColors = LocalGradientColors.current,
     content: @Composable () -> Unit,
@@ -138,7 +138,7 @@ annotation class ThemePreviews
 @ThemePreviews
 @Composable
 fun BackgroundDefault() {
-    SkTheme(disableDynamicTheming = true) {
+    SimpleNoteTheme(disableDynamicTheming = true) {
         SkBackground(Modifier.size(100.dp), content = {})
     }
 }
@@ -146,7 +146,7 @@ fun BackgroundDefault() {
 @ThemePreviews
 @Composable
 fun BackgroundDynamic() {
-    SkTheme(disableDynamicTheming = false) {
+    SimpleNoteTheme(disableDynamicTheming = false) {
         SkBackground(Modifier.size(100.dp), content = {})
     }
 }
@@ -154,7 +154,7 @@ fun BackgroundDynamic() {
 @ThemePreviews
 @Composable
 fun BackgroundAndroid() {
-    SkTheme(androidTheme = true) {
+    SimpleNoteTheme(androidTheme = true) {
         SkBackground(Modifier.size(100.dp), content = {})
     }
 }
@@ -162,23 +162,23 @@ fun BackgroundAndroid() {
 @ThemePreviews
 @Composable
 fun GradientBackgroundDefault() {
-    SkTheme(disableDynamicTheming = true) {
-        SkGradientBackground(Modifier.size(100.dp), content = {})
+    SimpleNoteTheme(disableDynamicTheming = true) {
+        SimpleNoteGradientBackground(Modifier.size(100.dp), content = {})
     }
 }
 
 @ThemePreviews
 @Composable
 fun GradientBackgroundDynamic() {
-    SkTheme(disableDynamicTheming = false) {
-        SkGradientBackground(Modifier.size(100.dp), content = {})
+    SimpleNoteTheme(disableDynamicTheming = false) {
+        SimpleNoteGradientBackground(Modifier.size(100.dp), content = {})
     }
 }
 
 @ThemePreviews
 @Composable
 fun GradientBackgroundAndroid() {
-    SkTheme(androidTheme = true) {
-        SkGradientBackground(Modifier.size(100.dp), content = {})
+    SimpleNoteTheme(androidTheme = true) {
+        SimpleNoteGradientBackground(Modifier.size(100.dp), content = {})
     }
 }

@@ -18,8 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mshdabiola.designsystem.icon.SkIcons
-import com.mshdabiola.designsystem.theme.SkTheme
+import com.mshdabiola.designsystem.icon.SimpleNoteIcons
+import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 
 @Composable
 fun SkButton(
@@ -93,7 +93,7 @@ private fun SkButtonContent(
 @ThemePreviews
 @Composable
 fun ButtonPreview() {
-    SkTheme {
+    SimpleNoteTheme {
         SkBackground(modifier = Modifier.size(150.dp, 50.dp)) {
             SkButton(onClick = {}, text = { Text("Test button") })
         }
@@ -103,7 +103,7 @@ fun ButtonPreview() {
 @ThemePreviews
 @Composable
 fun ButtonPreview2() {
-    SkTheme {
+    SimpleNoteTheme {
         SkBackground(modifier = Modifier.size(150.dp, 50.dp)) {
             SkButton(onClick = {}, text = { Text("Test button") })
         }
@@ -113,12 +113,12 @@ fun ButtonPreview2() {
 @ThemePreviews
 @Composable
 fun ButtonLeadingIconPreview() {
-    SkTheme {
+    SimpleNoteTheme {
         SkBackground(modifier = Modifier.size(150.dp, 50.dp)) {
             SkButton(
                 onClick = {},
                 text = { Text("Test button") },
-                leadingIcon = { Icon(imageVector = SkIcons.Add, contentDescription = null) },
+                leadingIcon = { Icon(imageVector = SimpleNoteIcons.Add, contentDescription = null) },
             )
         }
     }

@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mshdabiola.designsystem.R
-import com.mshdabiola.designsystem.icon.SkIcons
+import com.mshdabiola.designsystem.icon.SimpleNoteIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,9 +106,9 @@ fun DetailTopAppBar(
 private fun SkTopAppBarPreview() {
     SkTopAppBar(
         titleRes = android.R.string.untitled,
-        navigationIcon = SkIcons.Search,
+        navigationIcon = SimpleNoteIcons.Search,
         navigationIconContentDescription = "Navigation icon",
-        actionIcon = SkIcons.MoreVert,
+        actionIcon = SimpleNoteIcons.MoreVert,
         actionIconContentDescription = "Action icon",
     )
 }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mshdabiola.analytics.LocalAnalyticsHelper
-import com.mshdabiola.designsystem.theme.SkTheme
+import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.noteItem(
@@ -82,7 +81,7 @@ data class NoteUiState(
 @Preview
 @Composable
 private fun NoteUiPreview() {
-    SkTheme {
+    SimpleNoteTheme {
         LazyColumn {
             noteItem(
                 feedMainState = MainState.Loading,

@@ -178,7 +178,7 @@ val DarkAndroidBackgroundTheme = BackgroundTheme(color = Color.Black)
  *        supported. This parameter has no effect if [androidTheme] is `true`.
  */
 @Composable
-fun SkTheme(
+fun SimpleNoteTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     androidTheme: Boolean = false,
     disableDynamicTheming: Boolean = true,

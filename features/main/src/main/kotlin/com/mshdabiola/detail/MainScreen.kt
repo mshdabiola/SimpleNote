@@ -38,7 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mshdabiola.designsystem.component.SkLoadingWheel
 import com.mshdabiola.designsystem.theme.LocalTintTheme
-import com.mshdabiola.designsystem.theme.SkTheme
+import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import com.mshdabiola.main.R
 import com.mshdabiola.ui.MainState
 import com.mshdabiola.ui.MainState.Loading
@@ -192,7 +192,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun LoadingStatePreview() {
-    SkTheme {
+    SimpleNoteTheme {
         LoadingState()
     }
 }
@@ -200,7 +200,7 @@ private fun LoadingStatePreview() {
 @Preview
 @Composable
 private fun MainListPreview() {
-    SkTheme {
+    SimpleNoteTheme {
         MainList(
             feedMainState = Success(
                 listOf(
@@ -232,7 +232,7 @@ private fun MainListPreview() {
 @Preview
 @Composable
 private fun EmptyStatePreview() {
-    SkTheme {
+    SimpleNoteTheme {
         EmptyState()
     }
 }

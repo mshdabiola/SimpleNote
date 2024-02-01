@@ -20,7 +20,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SkeletonAndroid"
+rootProject.name = "SimpleNote"
 include(":app")
 include(":benchmarks")
 include(":modules:data")
