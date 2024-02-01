@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.mshdabiola.skeletonandroid",
+  "variantName": "nonMinifiedRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "minSdkVersionForDexing": 24,
+      "versionCode": 1,
+      "versionName": "0.0.1",
+      "outputFile": "app-nonMinifiedRelease.apk"
+    }
+  ],
+  "elementType": "File"
+}

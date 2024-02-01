@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "396771990243",
+    "project_id": "skeletonandroid-77bf1",
+    "storage_bucket": "skeletonandroid-77bf1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396771990243:android:ecc1c345b0eb9b220043d6",
+        "android_client_info": {
+          "package_name": "com.mshdabiola.skeletonandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5uGjDJrQlmFD1DnavqSfAt1lhSYv6R7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396771990243:android:35ebf1a0f0ef41510043d6",
+        "android_client_info": {
+          "package_name": "com.mshdabiola.skeletonandroid.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5uGjDJrQlmFD1DnavqSfAt1lhSYv6R7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396771990243:android:35ebf1a0f0ef41510043d6",
+        "android_client_info": {
+          "package_name": "com.mshdabiola.skeletonandroid.benchmark"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5uGjDJrQlmFD1DnavqSfAt1lhSYv6R7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
