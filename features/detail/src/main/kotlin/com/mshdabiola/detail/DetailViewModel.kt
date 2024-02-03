@@ -23,6 +23,7 @@ import com.mshdabiola.ui.asNoteUiState
 import com.mshdabiola.ui.toNote
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -226,6 +227,22 @@ class DetailViewModel @Inject constructor(
     fun savePhoto(uri: Uri, id: Long) {
         viewModelScope.launch {
             contentManager.saveImage(uri, id)
+        }
+    }
+
+    fun deleteImage(index: Int){
+        viewModelScope.launch(Dispatchers.IO){
+            var notes = currentNote.value
+            val contents = notes.contents
+                .map { it.copy(isFocus = false) }
+                .toMutableList()
+
+            val note = contents.removeAt(index)
+
+            notes = notes.copy(contents = contents.toImmutableList())
+            _currentNote.value = notes
+
+            contentManager.deleteImage(note.content)
         }
     }
 

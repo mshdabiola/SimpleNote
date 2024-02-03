@@ -91,4 +91,12 @@ class ContentManager
 
         return File(dir, "data_$drawingId.json")
     }
+
+    fun deleteImage(path: String) {
+        try {
+            File(path).deleteOnExit()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
 }

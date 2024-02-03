@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Checklist
@@ -110,6 +111,7 @@ internal fun DetailRoute(
         },
     )
     DetailScreen(
+        modifier = modifier,
         back = onBack,
         currentNoteUiState = viewModel.currentNote.value,
         onContentChange = viewModel::onContentChange,
@@ -123,6 +125,7 @@ internal fun DetailRoute(
         onFocusChange = viewModel::onFocusChange,
         addNewItem = viewModel::addNewItem,
         showImage = { showImageDialog = true },
+        deleteImage = viewModel::deleteImage
     )
 
     ImageDialog(
@@ -153,7 +156,9 @@ internal fun DetailScreen(
     onFocusChange: (Boolean, Int) -> Unit = { _, _ -> },
     addNewItem: (Int) -> Unit = {},
     showImage: () -> Unit = {},
-) {
+    deleteImage: (Int) -> Unit = {},
+
+    ) {
     var showDialog by remember {
         mutableStateOf(false)
     }
@@ -165,7 +170,7 @@ internal fun DetailScreen(
         TopAppBar(
             navigationIcon = {
                 IconButton(onClick = back) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "back")
                 }
             },
             title = {
@@ -237,7 +242,7 @@ internal fun DetailScreen(
                     onCheckChange = onCheckChange,
                     addNewItem = addNewItem,
                     onImageClick = { imagePath = it },
-                    deleteImage = { },
+                    deleteImage = deleteImage,
                 )
             }
             item {
