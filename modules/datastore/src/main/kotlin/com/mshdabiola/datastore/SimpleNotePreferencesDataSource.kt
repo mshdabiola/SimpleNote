@@ -44,7 +44,6 @@ class SimpleNotePreferencesDataSource @Inject constructor(
             )
         }
 
-
     suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         userPreferences.updateData {
             it.copy {
@@ -76,12 +75,9 @@ class SimpleNotePreferencesDataSource @Inject constructor(
         }
     }
 
-
-
     suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean) {
         userPreferences.updateData {
             it.copy { this.shouldHideOnboarding = shouldHideOnboarding }
         }
     }
 }
-

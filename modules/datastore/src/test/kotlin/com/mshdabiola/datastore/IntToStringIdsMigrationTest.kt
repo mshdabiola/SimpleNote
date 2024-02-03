@@ -6,8 +6,6 @@ package com.mshdabiola.datastore
 
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  * Unit test for [IntToStringIdsMigration]

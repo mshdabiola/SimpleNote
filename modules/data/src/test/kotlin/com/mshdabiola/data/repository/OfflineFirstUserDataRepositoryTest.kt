@@ -9,7 +9,6 @@ import com.mshdabiola.datastore.SimpleNotePreferencesDataSource
 import com.mshdabiola.datastore.di.testUserPreferencesDataStore
 import com.mshdabiola.model.DarkThemeConfig
 import com.mshdabiola.model.ThemeBrand
-import com.mshdabiola.model.UserData
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.TestScope
@@ -20,8 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class OfflineFirstUserDataRepositoryTest {
 
@@ -47,7 +44,6 @@ class OfflineFirstUserDataRepositoryTest {
             analyticsHelper,
         )
     }
-
 
     @Test
     fun offlineFirstUserDataRepository_set_theme_brand_delegates_to_nia_preferences() =
@@ -108,5 +104,4 @@ class OfflineFirstUserDataRepositoryTest {
                     .first(),
             )
         }
-
 }

@@ -25,8 +25,6 @@ class FakeUserDataRepository @Inject constructor(
     override val userData: Flow<UserData> =
         simpleNotePreferencesDataSource.userData
 
-
-
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         simpleNotePreferencesDataSource.setThemeBrand(themeBrand)
     }

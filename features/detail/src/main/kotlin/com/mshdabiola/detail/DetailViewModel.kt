@@ -73,7 +73,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    suspend fun initNote() {
+    private suspend fun initNote() {
         if (noteId == 0L) {
             val note = Note(
                 id = null,
@@ -128,8 +128,13 @@ class DetailViewModel @Inject constructor(
             }
 
             text.isBlank() && note.type == Type.TEXT -> {
-                contents.removeAt(index)
-                contents[index - 1] = contents[index - 1].copy(isFocus = true)
+                val lastNote = contents[index - 1]
+                if (lastNote.type != Type.IMAGE) {
+                    contents.removeAt(index)
+                    contents[index - 1] = contents[index - 1].copy(isFocus = true)
+                } else {
+                    contents[index] = contents[index].copy(content = text)
+                }
             }
 
             else -> {

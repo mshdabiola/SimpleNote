@@ -34,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -48,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -82,11 +84,11 @@ internal fun MainRoute(
     MainScreen(
         mainState = notes,
         searchNotes = searchNote,
-        isDarkMode =isDarkMode ,
+        isDarkMode = isDarkMode,
         modifier = modifier,
         onClick = onClick,
         onSearch = viewModel::onSearch,
-        toggleDarkMode = viewModel::toggleDarkMode
+        toggleDarkMode = viewModel::toggleDarkMode,
     )
 }
 
@@ -96,10 +98,10 @@ internal fun MainScreen(
     modifier: Modifier = Modifier,
     mainState: MainUiState,
     searchNotes: ImmutableList<NoteUiState>,
-    isDarkMode : Boolean=false,
+    isDarkMode: Boolean = false,
     onClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
-    toggleDarkMode:()->Unit={}
+    toggleDarkMode: () -> Unit = {},
 ) {
     when (mainState) {
         MainUiState.Loading -> LoadingState(modifier)
@@ -138,11 +140,10 @@ private fun MainList(
     modifier: Modifier = Modifier,
     notes: ImmutableList<NoteUiState>,
     searchNotes: ImmutableList<NoteUiState>,
-    isDarkMode : Boolean=false,
+    isDarkMode: Boolean = false,
     onNoteClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
-    toggleDarkMode:()->Unit={}
-
+    toggleDarkMode: () -> Unit = {},
 ) {
     val scrollableState = rememberLazyListState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "main:list")
@@ -156,166 +157,126 @@ private fun MainList(
         MutableInteractionSource()
     }
     val coroutineScope = rememberCoroutineScope()
-    Column(
-        modifier = modifier
-            .fillMaxSize(),
-    ) {
-        if (active) {
-            SearchBar(
-                query = query,
-                onQueryChange = {
-                    query = it
-                    onSearch(query)
-                },
-                placeholder = { Text(text = "Search Note") },
-                onSearch = {
-                    onSearch(query)
-                },
-                active = active,
-                onActiveChange = {
-                    active = it
-                },
-                leadingIcon = {
-                    IconButton(
-                        onClick = {
-                            active = false
-                            query = ""
-                            onSearch(query)
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "back",
-                        )
-                    }
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            query = ""
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "clear",
-                        )
-                    }
-                },
-                interactionSource = state,
-            ) {
-
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    state = scrollableState,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .testTag("main:search"),
-                ) {
-
-                    noteItem(
-                        notes = searchNotes,
-                        onClick = onNoteClick,
-                    )
-                    item {
-                        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
-                    }
-                }
-            }
-        } else {
-            MediumTopAppBar(
-                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.features_main_app_name),
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-
-
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            active = true
-                            coroutineScope.launch {
-                                delay(1000)
-                                state.emit(PressInteraction.Press(Offset(200f, 10f)))
-                            }
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "search",
-                        )
-                    }
-                    IconButton(
-                        onClick =toggleDarkMode,
-                    ) {
-                        if (isDarkMode){
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            if (active) {
+                SearchBar(
+                    query = query,
+                    onQueryChange = {
+                        query = it
+                        onSearch(query)
+                    },
+                    placeholder = { Text(text = "Search Note") },
+                    onSearch = {
+                        onSearch(query)
+                    },
+                    active = active,
+                    onActiveChange = {
+                        active = it
+                    },
+                    leadingIcon = {
+                        IconButton(
+                            onClick = {
+                                active = false
+                                query = ""
+                                onSearch(query)
+                            },
+                        ) {
                             Icon(
-                                imageVector = Icons.Default.LightMode,
-                                contentDescription = "light mode",
-                            )
-                        }else{
-                            Icon(
-                                imageVector = Icons.Default.DarkMode,
-                                contentDescription = "dark mode",
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "back",
                             )
                         }
-
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                query = ""
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "clear",
+                            )
+                        }
+                    },
+                    interactionSource = state,
+                ) {
+                    LazyColumn(
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        state = scrollableState,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .testTag("main:search"),
+                    ) {
+                        noteItem(
+                            notes = searchNotes,
+                            onClick = onNoteClick,
+                        )
+                        item {
+                            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+                        }
                     }
-                },
-            )
-        }
-
-
-
+                }
+            } else {
+                MediumTopAppBar(
+                    colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent, scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer),
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.features_main_app_name),
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = {
+                                active = true
+                                coroutineScope.launch {
+                                    delay(1000)
+                                    state.emit(PressInteraction.Press(Offset(200f, 10f)))
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "search",
+                            )
+                        }
+                        IconButton(
+                            onClick = toggleDarkMode,
+                        ) {
+                            if (isDarkMode) {
+                                Icon(
+                                    imageVector = Icons.Default.LightMode,
+                                    contentDescription = "light mode",
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.DarkMode,
+                                    contentDescription = "dark mode",
+                                )
+                            }
+                        }
+                    },
+                )
+            }
+        },
+    ) {
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             state = scrollableState,
             modifier = Modifier
-                .weight(1f)
+                .padding(it)
                 .fillMaxWidth()
                 .testTag("main:list"),
         ) {
-//            stickyHeader {
-//                TextField(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 16.dp),
-//                    value = query,
-//                    onValueChange = {
-//                        query = it
-//                        onSearch(query)
-//                    },
-//                    placeholder = {
-//                        Text(text = "Search Notes", color = contentColor)
-//                    },
-//                    shape = RoundedCornerShape(24.dp),
-//                    colors = TextFieldDefaults.colors(
-//                        focusedContainerColor = containerColor,
-//                        unfocusedContainerColor = containerColor,
-//                        disabledContainerColor = containerColor,
-//                        focusedIndicatorColor = Color.Transparent,
-//                        unfocusedIndicatorColor = Color.Transparent,
-//                    ),
-//                    leadingIcon = {
-//                        IconButton(onClick = {}) {
-//                            Icon(
-//                                imageVector = Icons.Default.Search,
-//                                contentDescription = "search",
-//                                tint = contentColor
-//                            )
-//                        }
-//                    }
-//
-//
-//                )
-//            }
-
             noteItem(
                 notes = notes,
                 onClick = onNoteClick,
@@ -325,6 +286,16 @@ private fun MainList(
             }
         }
     }
+//    Column(
+//        modifier = modifier
+//            .fillMaxSize(),
+//    ) {
+//
+//
+//
+//
+//
+//    }
 }
 
 @Composable
@@ -379,14 +350,14 @@ private fun LoadingStatePreview() {
 private fun MainListPreview() {
     SimpleNoteTheme {
         MainList(
-           notes =  listOf(
+            notes = listOf(
                 NoteUiState(),
 
-                ).toImmutableList(),
+            ).toImmutableList(),
             searchNotes = listOf(
                 NoteUiState(),
 
-                ).toImmutableList(),
+            ).toImmutableList(),
         )
     }
 }

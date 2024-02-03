@@ -16,6 +16,7 @@ android {
 dependencies {
     implementation(project(":modules:data"))
     implementation(project(":modules:domain"))
+    implementation(libs.telephoto.zoomable.image)
 
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.robolectric)

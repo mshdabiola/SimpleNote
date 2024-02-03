@@ -95,7 +95,7 @@ fun NoteUi(
             }
         },
         colors = ListItemDefaults
-            .colors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            .colors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
         shadowElevation = 8.dp,
         tonalElevation = 8.dp,
     )

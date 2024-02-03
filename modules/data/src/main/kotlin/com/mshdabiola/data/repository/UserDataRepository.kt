@@ -16,7 +16,6 @@ interface UserDataRepository {
      */
     val userData: Flow<UserData>
 
-
     suspend fun setThemeBrand(themeBrand: ThemeBrand)
 
     /**

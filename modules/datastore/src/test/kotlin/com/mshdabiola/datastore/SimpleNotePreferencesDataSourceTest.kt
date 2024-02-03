@@ -42,7 +42,6 @@ class SimpleNotePreferencesDataSourceTest {
         assertTrue(subject.userData.first().shouldHideOnboarding)
     }
 
-
     @Test
     fun shouldUseDynamicColorFalseByDefault() = testScope.runTest {
         assertFalse(subject.userData.first().useDynamicColor)

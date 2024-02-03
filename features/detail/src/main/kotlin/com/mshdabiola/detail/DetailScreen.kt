@@ -8,23 +8,34 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.CheckCircleOutline
 import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +44,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,7 +52,9 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -49,6 +63,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mshdabiola.model.Type
@@ -56,7 +71,7 @@ import com.mshdabiola.ui.NoteItemUiState
 import com.mshdabiola.ui.NoteUiState
 import com.mshdabiola.ui.TrackScreenViewEvent
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.launch
+import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 
 @Composable
 internal fun DetailRoute(
@@ -142,6 +157,10 @@ internal fun DetailScreen(
     var showDialog by remember {
         mutableStateOf(false)
     }
+
+    var imagePath by remember {
+        mutableStateOf<String?>(null)
+    }
     Column(modifier) {
         TopAppBar(
             navigationIcon = {
@@ -167,11 +186,12 @@ internal fun DetailScreen(
                 IconButton(onClick = { showDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "back",
-                        tint = Color.Red,
+                        contentDescription = "delete",
+                        tint = MaterialTheme.colorScheme.error,
                     )
                 }
             },
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
         )
 
         LazyColumn(
@@ -216,7 +236,12 @@ internal fun DetailScreen(
                     onContentChange = onContentChange,
                     onCheckChange = onCheckChange,
                     addNewItem = addNewItem,
+                    onImageClick = { imagePath = it },
+                    deleteImage = { },
                 )
+            }
+            item {
+                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
             }
         }
     }
@@ -224,10 +249,12 @@ internal fun DetailScreen(
     if (showDialog) {
         DeleteDialog(onDismiss = { showDialog = false }, onDelete = onDeleteNote)
     }
+    ImageViewer(imagePath) {
+        imagePath = null
+    }
     TrackScreenViewEvent(screenName = "Detail")
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteItemUi(
     index: Int,
@@ -235,7 +262,9 @@ fun NoteItemUi(
     noteItemUiState: NoteItemUiState,
     onContentChange: (String, Int) -> Unit,
     onCheckChange: (Boolean, Int) -> Unit,
-    addNewItem: (Int) -> Unit,
+    addNewItem: (Int) -> Unit = {},
+    onImageClick: (String) -> Unit = {},
+    deleteImage: (Int) -> Unit = {},
 ) {
     val focusRequester = remember {
         FocusRequester()
@@ -244,12 +273,15 @@ fun NoteItemUi(
 //    val focusRequester2 = remember {
 //        BringIntoViewRequester()
 //    }
-    LaunchedEffect(key1 = noteItemUiState, block = {
-        if (noteItemUiState.isFocus) {
-            focusRequester.requestFocus()
-            //  focusRequester2.bringIntoView()
-        }
-    })
+    LaunchedEffect(
+        key1 = noteItemUiState,
+        block = {
+            if (noteItemUiState.isFocus) {
+                focusRequester.requestFocus()
+                //  focusRequester2.bringIntoView()
+            }
+        },
+    )
     when (noteItemUiState.type) {
         Type.TEXT -> {
             TextField(
@@ -327,14 +359,25 @@ fun NoteItemUi(
         }
 
         Type.IMAGE -> {
-            AsyncImage(
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .fillMaxWidth(),
-                model = noteItemUiState.content,
-                contentDescription = "",
-                contentScale = ContentScale.Fit,
-            )
+            Box(modifier.padding(horizontal = 16.dp)) {
+                AsyncImage(
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .height(128.dp)
+                        .fillMaxWidth()
+                        .clickable { onImageClick(noteItemUiState.content) },
+                    model = noteItemUiState.content,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                )
+
+                FilledTonalIconButton(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    onClick = { deleteImage(index) },
+                ) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "delete")
+                }
+            }
         }
     }
 }
@@ -390,4 +433,38 @@ fun DeleteDialog(
             Text(text = "Are you sure you want to delete this note?")
         },
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ImageViewer(
+    path: String? = null,
+    onDismiss: () -> Unit,
+) {
+    if (path != null) {
+        AlertDialog(onDismissRequest = onDismiss) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(360.dp)
+                    .padding(horizontal = 16.dp),
+            ) {
+                ZoomableAsyncImage(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp)),
+                    model = path,
+                    contentDescription = "Image",
+                    contentScale = ContentScale.Crop,
+                )
+
+                FilledTonalIconButton(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    onClick = onDismiss,
+                ) {
+                    Icon(imageVector = Icons.Default.Close, contentDescription = "close")
+                }
+            }
+        }
+    }
 }

@@ -4,9 +4,6 @@
 
 package com.mshdabiola.main
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mshdabiola.data.repository.NoteRepository
@@ -34,13 +31,12 @@ class MainViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
 ) : ViewModel() {
 
-
     val mainUiState: StateFlow<MainUiState> =
         noteRepository.getAll()
             .map { notes ->
                 MainUiState.Success(
                     notes
-                        .filter { it.title.isNotBlank() && it.contents.all { it.content.isNotBlank() } }
+                        .filter { it.title.isNotBlank() || it.contents.all { it.content.isNotBlank() } }
                         .map { it.asNoteUiState() }
                         .toImmutableList(),
                 )
@@ -50,65 +46,55 @@ class MainViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = MainUiState.Loading,
             )
-    val isDarkMode =userDataRepository
+    val isDarkMode = userDataRepository
         .userData
-        .map { it.darkThemeConfig==DarkThemeConfig.DARK }
+        .map { it.darkThemeConfig == DarkThemeConfig.DARK }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = false,
         )
 
-    private val _searchNote = MutableStateFlow(emptyList<NoteUiState>().toImmutableList())
-    val searchState = _searchNote.asStateFlow()
-
-
+    private val searchNote = MutableStateFlow(emptyList<NoteUiState>().toImmutableList())
+    val searchState = searchNote.asStateFlow()
 
     var job: Job? = null
     fun onSearch(text: String) {
-
-        if (text.isBlank()){
-            _searchNote.update {
+        if (text.isBlank()) {
+            searchNote.update {
                 emptyList<NoteUiState>().toImmutableList()
             }
-
-        }else{
+        } else {
             job?.cancel()
             job = viewModelScope.launch {
                 val allNotes = noteRepository
                     .getAll()
                     .first()
-                    .map { it.asNoteUiState () }
+                    .map { it.asNoteUiState() }
 
                 val notes = if (text.isNotBlank()) {
                     allNotes
                         .filter {
-                            it.title.contains(text, true) || it.contents.any { it.content.contains(text,true) } //
+                            it.title.contains(text, true) || it.contents.any { it.content.contains(text, true) } //
                         }
                 } else {
                     allNotes
                 }
 
-
-                _searchNote.update {
+                searchNote.update {
                     notes.toImmutableList()
                 }
-
             }
-
         }
-
-
     }
 
-    fun toggleDarkMode(){
+    fun toggleDarkMode() {
         viewModelScope.launch {
-            if (isDarkMode.value){
+            if (isDarkMode.value) {
                 userDataRepository.setDarkThemeConfig(DarkThemeConfig.LIGHT)
-            }else{
+            } else {
                 userDataRepository.setDarkThemeConfig(DarkThemeConfig.DARK)
             }
         }
-
     }
 }

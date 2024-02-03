@@ -25,19 +25,6 @@ fun LazyListScope.noteItem(
             onClick(it)
             analyticsHelper.logNoteOpened(it.toString())
         })
-//                NoteUi(
-//                    noteUiState = note,
-//                    onClick = {
-//                        analyticsHelper.logNoteOpened(
-//                            newsResourceId = note.id.toString(),
-//                        )
-//                        onClick(note.id)
-//                        // launchCustomChromeTab(context, Uri.parse(""), backgroundColor)
-//                    },
-//                    modifier = Modifier
-//                        .padding(horizontal = 8.dp)
-//                        .animateItemPlacement(),
-//                )
     }
 }
 
