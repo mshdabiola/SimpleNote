@@ -6,7 +6,6 @@ package com.mshdabiola.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mshdabiola.model.Note
 
 @Entity(tableName = "note_table")
 data class NoteEntity(
@@ -14,6 +13,5 @@ data class NoteEntity(
     val id: Long?,
     val title: String,
     val content: String,
+    val createdAt: Long,
 )
-
-fun NoteEntity.asExternalNote() = Note(id, title, content)

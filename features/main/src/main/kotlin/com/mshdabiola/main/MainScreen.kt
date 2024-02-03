@@ -2,27 +2,35 @@
  *abiola 2022
  */
 
-package com.mshdabiola.detail
+package com.mshdabiola.main
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,66 +47,43 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mshdabiola.designsystem.component.SkLoadingWheel
 import com.mshdabiola.designsystem.theme.LocalTintTheme
 import com.mshdabiola.designsystem.theme.SimpleNoteTheme
-import com.mshdabiola.main.R
-import com.mshdabiola.ui.MainState
-import com.mshdabiola.ui.MainState.Loading
-import com.mshdabiola.ui.MainState.Success
 import com.mshdabiola.ui.NoteUiState
 import com.mshdabiola.ui.TrackScreenViewEvent
 import com.mshdabiola.ui.TrackScrollJank
 import com.mshdabiola.ui.noteItem
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun MainRoute(
     onClick: (Long) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
-    val feedState by viewModel.feedUiMainState.collectAsStateWithLifecycle()
+    val feedState by viewModel.mainUiState.collectAsStateWithLifecycle()
     MainScreen(
         mainState = feedState,
-        onShowSnackbar = onShowSnackbar,
         modifier = modifier,
         onClick = onClick,
-        shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
-        undoBookmarkRemoval = {},
-        clearUndoState = {},
     )
 }
 
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 @Composable
 internal fun MainScreen(
-    mainState: MainState,
-    onClick: (Long) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    mainState: MainUiState,
+    onClick: (Long) -> Unit = {},
+    onSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
-    shouldDisplayUndoBookmark: Boolean = false,
-    undoBookmarkRemoval: () -> Unit = {},
-    clearUndoState: () -> Unit = {},
 ) {
-    val bookmarkRemovedMessage = stringResource(id = R.string.features_main_removed)
-    val undoText = stringResource(id = R.string.features_main_undo)
-
-    LaunchedEffect(shouldDisplayUndoBookmark) {
-        if (shouldDisplayUndoBookmark) {
-            val snackBarResult = onShowSnackbar(bookmarkRemovedMessage, undoText)
-            if (snackBarResult) {
-                undoBookmarkRemoval()
-            } else {
-                clearUndoState()
-            }
-        }
-    }
-
     when (mainState) {
-        Loading -> LoadingState(modifier)
-        is Success -> if (mainState.noteUiStates.isNotEmpty()) {
+        MainUiState.Loading -> LoadingState(modifier)
+        is MainUiState.Success -> if (mainState.noteUiStates.isNotEmpty()) {
             MainList(
-                mainState,
-                onClick,
-                modifier,
+                mainState = mainState.noteUiStates,
+                onSearch = onSearch,
+                onNoteClick = onClick,
+                modifier = modifier,
             )
         } else {
             EmptyState(modifier)
@@ -119,33 +104,89 @@ private fun LoadingState(modifier: Modifier = Modifier) {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun MainList(
-    feedMainState: MainState,
-    onClick: (Long) -> Unit,
+    mainState: ImmutableList<NoteUiState>,
+    onNoteClick: (Long) -> Unit = {},
+    onSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val scrollableState = rememberLazyListState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "main:list")
-    Box(
+    var query by remember {
+        mutableStateOf("")
+    }
+    val containerColor = MaterialTheme.colorScheme.background
+    val contentColor = Color.DarkGray.copy(alpha = 0.6f)
+    Column(
         modifier = modifier
             .fillMaxSize(),
     ) {
+        MediumTopAppBar(
+            colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
+            title = {
+                Text(
+                    text = stringResource(id = R.string.features_main_app_name),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            },
+            actions = {
+            },
+        )
+
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             state = scrollableState,
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
+                .fillMaxWidth()
                 .testTag("main:list"),
         ) {
-            noteItem(
-                feedMainState = feedMainState,
-                onClick = onClick,
-            )
-//            item(span = StaggeredGridItemSpan.FullLine) {
-//                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+//            stickyHeader {
+//                TextField(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 16.dp),
+//                    value = query,
+//                    onValueChange = {
+//                        query = it
+//                        onSearch(query)
+//                    },
+//                    placeholder = {
+//                        Text(text = "Search Notes", color = contentColor)
+//                    },
+//                    shape = RoundedCornerShape(24.dp),
+//                    colors = TextFieldDefaults.colors(
+//                        focusedContainerColor = containerColor,
+//                        unfocusedContainerColor = containerColor,
+//                        disabledContainerColor = containerColor,
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent,
+//                    ),
+//                    leadingIcon = {
+//                        IconButton(onClick = {}) {
+//                            Icon(
+//                                imageVector = Icons.Default.Search,
+//                                contentDescription = "search",
+//                                tint = contentColor
+//                            )
+//                        }
+//                    }
+//
+//
+//                )
 //            }
+
+            noteItem(
+                notes = mainState,
+                onClick = onNoteClick,
+            )
+            item {
+                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+            }
         }
     }
 }
@@ -202,29 +243,10 @@ private fun LoadingStatePreview() {
 private fun MainListPreview() {
     SimpleNoteTheme {
         MainList(
-            feedMainState = Success(
-                listOf(
-                    NoteUiState(
-                        id = 5257L,
-                        title = "Jacinto",
-                        description = "Charisma",
-                    ),
-                    NoteUiState(id = 7450L, title = "Dewayne", description = "Justan"),
-                    NoteUiState(id = 1352L, title = "Bjorn", description = "Daquan"),
-                    NoteUiState(id = 4476L, title = "Tonya", description = "Ivelisse"),
-                    NoteUiState(id = 6520L, title = "Raegan", description = "Katrena"),
-                    NoteUiState(id = 5136L, title = "Markis", description = "Giles"),
-                    NoteUiState(id = 6868L, title = "Virgilio", description = "Ashford"),
-                    NoteUiState(id = 7100L, title = "Larae", description = "Krystyn"),
-                    NoteUiState(id = 3210L, title = "Nigel", description = "Sergio"),
-                    NoteUiState(id = 7830L, title = "Kristy", description = "Jacobi"),
-                    NoteUiState(id = 1020L, title = "Kathlene", description = "Shlomo"),
-                    NoteUiState(id = 3365L, title = "Corin", description = "Ross"),
+            listOf(
+                NoteUiState(),
 
-                ),
-            ),
-
-            onClick = {},
+            ).toImmutableList(),
         )
     }
 }

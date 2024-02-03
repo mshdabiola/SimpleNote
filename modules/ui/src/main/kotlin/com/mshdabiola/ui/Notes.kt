@@ -5,87 +5,45 @@
 package com.mshdabiola.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.mshdabiola.analytics.LocalAnalyticsHelper
-import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.noteItem(
-    feedMainState: MainState,
+    notes: List<NoteUiState>,
     onClick: (Long) -> Unit = {},
 ) {
-    when (feedMainState) {
-        MainState.Loading -> Unit
-        is MainState.Success -> {
-            items(
-                items = feedMainState.noteUiStates,
-                key = { it.id },
-                contentType = { "newsFeedItem" },
-            ) { note ->
-                val analyticsHelper = LocalAnalyticsHelper.current
+    items(
+        items = notes,
+        key = { it.id },
+        contentType = { "newsFeedItem" },
+    ) { note ->
+        val analyticsHelper = LocalAnalyticsHelper.current
 
-                NoteUi(
-                    noteUiState = note,
-                    onClick = {
-                        analyticsHelper.logNoteOpened(
-                            newsResourceId = note.id.toString(),
-                        )
-                        onClick(note.id)
-                        // launchCustomChromeTab(context, Uri.parse(""), backgroundColor)
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .animateItemPlacement(),
-                )
-            }
-        }
+        NoteUi(noteUiState = note, onNoteClick = {
+            onClick(it)
+            analyticsHelper.logNoteOpened(it.toString())
+        })
+//                NoteUi(
+//                    noteUiState = note,
+//                    onClick = {
+//                        analyticsHelper.logNoteOpened(
+//                            newsResourceId = note.id.toString(),
+//                        )
+//                        onClick(note.id)
+//                        // launchCustomChromeTab(context, Uri.parse(""), backgroundColor)
+//                    },
+//                    modifier = Modifier
+//                        .padding(horizontal = 8.dp)
+//                        .animateItemPlacement(),
+//                )
     }
 }
 
-@Composable
-fun NoteUi(
-    modifier: Modifier,
-    noteUiState: NoteUiState,
-    onClick: (Long) -> Unit,
-) {
-    ListItem(
-        modifier = modifier.clickable { onClick(noteUiState.id) },
-        headlineContent = { Text(text = noteUiState.title) },
-        supportingContent = { Text(text = noteUiState.description) },
-    )
-}
-
-sealed interface MainState {
-    data object Loading : MainState
+sealed interface MainUiState {
+    data object Loading : MainUiState
     data class Success(
-        val noteUiStates: List<NoteUiState>,
-    ) : MainState
-}
-
-data class NoteUiState(
-    val id: Long,
-    val title: String,
-    val description: String,
-)
-
-@Preview
-@Composable
-private fun NoteUiPreview() {
-    SimpleNoteTheme {
-        LazyColumn {
-            noteItem(
-                feedMainState = MainState.Loading,
-            )
-        }
-    }
+        val notes: List<NoteUiState>,
+    ) : MainUiState
 }

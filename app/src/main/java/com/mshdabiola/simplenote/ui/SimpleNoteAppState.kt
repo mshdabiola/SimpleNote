@@ -22,12 +22,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @Composable
-fun rememberSkAppState(
+fun rememberSimpleNoteAppState(
     windowSizeClass: WindowSizeClass,
     networkMonitor: NetworkMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
-): SkAppState {
+): SimpleNoteAppState {
     NavigationTrackingSideEffect(navController)
     return remember(
         navController,
@@ -35,7 +35,7 @@ fun rememberSkAppState(
         windowSizeClass,
         networkMonitor,
     ) {
-        SkAppState(
+        SimpleNoteAppState(
             navController,
             coroutineScope,
             windowSizeClass,
@@ -45,7 +45,7 @@ fun rememberSkAppState(
 }
 
 @Stable
-class SkAppState(
+class SimpleNoteAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
     val windowSizeClass: WindowSizeClass,

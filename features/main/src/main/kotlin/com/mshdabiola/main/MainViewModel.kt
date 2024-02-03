@@ -2,7 +2,7 @@
  *abiola 2022
  */
 
-package com.mshdabiola.detail
+package com.mshdabiola.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mshdabiola.data.repository.NoteRepository
 import com.mshdabiola.data.repository.UserDataRepository
-import com.mshdabiola.ui.MainState
-import com.mshdabiola.ui.NoteUiState
+import com.mshdabiola.ui.asNoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -29,12 +29,19 @@ class MainViewModel @Inject constructor(
     var shouldDisplayUndoBookmark by mutableStateOf(false)
     private var lastRemovedBookmarkId: String? = null
 
-    val feedUiMainState: StateFlow<MainState> =
+    val mainUiState: StateFlow<MainUiState> =
         noteRepository.getAll()
-            .map { notes -> MainState.Success(notes.map { NoteUiState(it.id!!, it.title, it.content) }) }
+            .map { notes ->
+                MainUiState.Success(
+                    notes
+                        .filter { it.title.isNotBlank() && it.contents.all { it.content.isNotBlank() } }
+                        .map { it.asNoteUiState() }
+                        .toImmutableList(),
+                )
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = MainState.Loading,
+                initialValue = MainUiState.Loading,
             )
 }

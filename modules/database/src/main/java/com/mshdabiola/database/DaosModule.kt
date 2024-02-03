@@ -15,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 object DaosModule {
 
     @Provides
-    fun noteDaoProvider(db: SkeletonDatabase): NoteDao {
+    fun noteDaoProvider(db: NoteDatabase): NoteDao {
         return db.getNoteDao()
     }
 }

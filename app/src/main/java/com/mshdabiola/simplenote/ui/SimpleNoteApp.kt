@@ -39,12 +39,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mshdabiola.data.util.NetworkMonitor
-import com.mshdabiola.designsystem.component.SkBackground
 import com.mshdabiola.designsystem.component.SimpleNoteGradientBackground
+import com.mshdabiola.designsystem.component.SkBackground
 import com.mshdabiola.designsystem.theme.GradientColors
 import com.mshdabiola.designsystem.theme.LocalGradientColors
-import com.mshdabiola.detail.navigation.MAIN_ROUTE
 import com.mshdabiola.detail.navigation.navigateToDetail
+import com.mshdabiola.main.navigation.MAIN_ROUTE
 import com.mshdabiola.simplenote.navigation.SkNavHost
 
 @OptIn(
@@ -55,7 +55,7 @@ import com.mshdabiola.simplenote.navigation.SkNavHost
 fun SkApp(
     windowSizeClass: WindowSizeClass,
     networkMonitor: NetworkMonitor,
-    appState: SkAppState = rememberSkAppState(
+    appState: SimpleNoteAppState = rememberSimpleNoteAppState(
         networkMonitor = networkMonitor,
         windowSizeClass = windowSizeClass,
     ),
@@ -99,6 +99,7 @@ fun SkApp(
                             modifier = Modifier
                                 .windowInsetsPadding(WindowInsets.safeDrawing)
                                 .testTag("add"),
+                            containerColor = MaterialTheme.colorScheme.tertiary,
                             onClick = { appState.navController.navigateToDetail(0) },
                         ) {
                             Icon(imageVector = Icons.Rounded.Add, contentDescription = "add note")

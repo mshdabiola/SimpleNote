@@ -7,15 +7,15 @@ package com.mshdabiola.simplenote.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import com.mshdabiola.detail.navigation.MAIN_ROUTE
 import com.mshdabiola.detail.navigation.detailScreen
-import com.mshdabiola.detail.navigation.mainScreen
 import com.mshdabiola.detail.navigation.navigateToDetail
-import com.mshdabiola.simplenote.ui.SkAppState
+import com.mshdabiola.main.navigation.MAIN_ROUTE
+import com.mshdabiola.main.navigation.mainScreen
+import com.mshdabiola.simplenote.ui.SimpleNoteAppState
 
 @Composable
 fun SkNavHost(
-    appState: SkAppState,
+    appState: SimpleNoteAppState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     startDestination: String = MAIN_ROUTE,
@@ -26,7 +26,7 @@ fun SkNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        mainScreen(onShowSnackbar = onShowSnackbar, onClicked = navController::navigateToDetail)
+        mainScreen(onClicked = navController::navigateToDetail)
         detailScreen(onShowSnackbar, navController::popBackStack)
     }
 }

@@ -2,23 +2,22 @@
  *abiola 2022
  */
 
-package com.mshdabiola.detail.navigation
+package com.mshdabiola.main.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.mshdabiola.detail.MainRoute
+import com.mshdabiola.main.MainRoute
 
 const val MAIN_ROUTE = "main_route"
 
 fun NavController.navigateToMain(navOptions: NavOptions) = navigate(MAIN_ROUTE, navOptions)
 
 fun NavGraphBuilder.mainScreen(
-    onShowSnackbar: suspend (String, String?) -> Boolean,
     onClicked: (Long) -> Unit,
 ) {
     composable(route = MAIN_ROUTE) {
-        MainRoute(onClick = onClicked, onShowSnackbar)
+        MainRoute(onClick = onClicked)
     }
 }

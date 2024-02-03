@@ -10,4 +10,5 @@
     <string name="features_main_empty_description">Updates you save will be stored here\nto read later</string>
     <string name="features_main_removed">Bookmark removed</string>
     <string name="features_main_undo">UNDO</string>
+    <string name="features_main_app_name">Note Pro</string>
 </resources>

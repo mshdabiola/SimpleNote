@@ -21,7 +21,7 @@ import com.mshdabiola.database.model.NoteEntity
     exportSchema = true,
 )
 @TypeConverters()
-abstract class SkeletonDatabase : RoomDatabase() {
+abstract class NoteDatabase : RoomDatabase() {
 
     abstract fun getNoteDao(): NoteDao
 //

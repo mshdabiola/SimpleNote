@@ -2,10 +2,11 @@
  *abiola 2022
  */
 
-package com.mshdabiola.detail
+package com.mshdabiola.main
 
 import androidx.lifecycle.SavedStateHandle
 import com.mshdabiola.data.repository.fake.FakeNoteRepository
+import com.mshdabiola.detail.DetailViewModel
 import com.mshdabiola.detail.navigation.DETAIL_ID_ARG
 import com.mshdabiola.testing.repository.TestUserDataRepository
 import com.mshdabiola.testing.util.MainDispatcherRule

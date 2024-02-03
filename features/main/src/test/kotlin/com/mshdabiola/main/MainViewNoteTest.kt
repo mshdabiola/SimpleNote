@@ -2,7 +2,7 @@
  *abiola 2022
  */
 
-package com.mshdabiola.detail
+package com.mshdabiola.main
 
 import com.mshdabiola.data.repository.fake.FakeNoteRepository
 import com.mshdabiola.testing.repository.TestUserDataRepository

@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SkTextField(
+fun NoteTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit = {},
@@ -60,5 +60,5 @@ fun SkTextField(
 @Preview
 @Composable
 private fun SkTextFieldPreview() {
-    SkTextField(value = "Sk Testing")
+    NoteTextField(value = "Sk Testing")
 }

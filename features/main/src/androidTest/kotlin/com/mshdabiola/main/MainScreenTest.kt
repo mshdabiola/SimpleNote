@@ -2,12 +2,12 @@
  *abiola 2022
  */
 
-package com.mshdabiola.detail
+package com.mshdabiola.main
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import com.mshdabiola.ui.MainState
+import com.mshdabiola.ui.MainUiState
 import com.mshdabiola.ui.NoteUiState
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +24,7 @@ class MainScreenTest {
     fun enterText_showsShowText() {
         composeTestRule.setContent {
             MainScreen(
-                mainState = MainState.Success(
+                mainState = MainUiState.Success(
                     listOf(
                         NoteUiState(
                             id = 5257L,
