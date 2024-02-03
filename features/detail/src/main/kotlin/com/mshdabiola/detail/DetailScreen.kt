@@ -125,7 +125,7 @@ internal fun DetailRoute(
         onFocusChange = viewModel::onFocusChange,
         addNewItem = viewModel::addNewItem,
         showImage = { showImageDialog = true },
-        deleteImage = viewModel::deleteImage
+        deleteImage = viewModel::deleteImage,
     )
 
     ImageDialog(
@@ -157,8 +157,7 @@ internal fun DetailScreen(
     addNewItem: (Int) -> Unit = {},
     showImage: () -> Unit = {},
     deleteImage: (Int) -> Unit = {},
-
-    ) {
+) {
     var showDialog by remember {
         mutableStateOf(false)
     }

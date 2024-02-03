@@ -4,12 +4,12 @@
 
 package com.mshdabiola.main
 
-import com.mshdabiola.ui.NoteUiState
+import com.mshdabiola.ui.MainNoteUiState
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface MainUiState {
     data object Loading : MainUiState
     data class Success(
-        val noteUiStates: ImmutableList<NoteUiState>,
+        val noteUiStates: ImmutableList<MainNoteUiState>,
     ) : MainUiState
 }

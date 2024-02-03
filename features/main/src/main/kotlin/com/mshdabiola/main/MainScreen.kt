@@ -5,11 +5,11 @@
 package com.mshdabiola.main
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -59,10 +58,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mshdabiola.designsystem.component.SkLoadingWheel
+import com.mshdabiola.designsystem.component.NoteLoadingWheel
 import com.mshdabiola.designsystem.theme.LocalTintTheme
 import com.mshdabiola.designsystem.theme.SimpleNoteTheme
-import com.mshdabiola.ui.NoteUiState
+import com.mshdabiola.ui.MainNoteUiState
 import com.mshdabiola.ui.TrackScreenViewEvent
 import com.mshdabiola.ui.TrackScrollJank
 import com.mshdabiola.ui.noteItem
@@ -97,7 +96,7 @@ internal fun MainRoute(
 internal fun MainScreen(
     modifier: Modifier = Modifier,
     mainState: MainUiState,
-    searchNotes: ImmutableList<NoteUiState>,
+    searchNotes: ImmutableList<MainNoteUiState>,
     isDarkMode: Boolean = false,
     onClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
@@ -125,21 +124,22 @@ internal fun MainScreen(
 
 @Composable
 private fun LoadingState(modifier: Modifier = Modifier) {
-    SkLoadingWheel(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentSize()
-            .testTag("main:loading"),
-        contentDesc = stringResource(id = R.string.features_main_loading),
-    )
+    Box(modifier.fillMaxSize()) {
+        NoteLoadingWheel(
+            modifier = modifier
+                .align(Alignment.Center)
+                .testTag("main:loading"),
+            contentDesc = stringResource(id = R.string.features_main_loading),
+        )
+    }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainList(
     modifier: Modifier = Modifier,
-    notes: ImmutableList<NoteUiState>,
-    searchNotes: ImmutableList<NoteUiState>,
+    notes: ImmutableList<MainNoteUiState>,
+    searchNotes: ImmutableList<MainNoteUiState>,
     isDarkMode: Boolean = false,
     onNoteClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
@@ -286,16 +286,6 @@ private fun MainList(
             }
         }
     }
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize(),
-//    ) {
-//
-//
-//
-//
-//
-//    }
 }
 
 @Composable
@@ -311,7 +301,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         val iconTint = LocalTintTheme.current.iconTint
         Image(
             modifier = Modifier.fillMaxWidth(),
-            painter = painterResource(id = R.drawable.features_main_img_empty_bookmarks),
+            painter = painterResource(id = R.drawable.empty_note),
             colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
             contentDescription = null,
         )
@@ -351,11 +341,25 @@ private fun MainListPreview() {
     SimpleNoteTheme {
         MainList(
             notes = listOf(
-                NoteUiState(),
+                MainNoteUiState(
+                    id = 9045L,
+                    title = "Torrell",
+                    content = null,
+                    checkFraction = null,
+                    path = null,
+                    createAt = "Petrina",
+                ),
 
             ).toImmutableList(),
             searchNotes = listOf(
-                NoteUiState(),
+                MainNoteUiState(
+                    id = 7645L,
+                    title = "Solange",
+                    content = null,
+                    checkFraction = null,
+                    path = null,
+                    createAt = "Cliffton",
+                ),
 
             ).toImmutableList(),
         )

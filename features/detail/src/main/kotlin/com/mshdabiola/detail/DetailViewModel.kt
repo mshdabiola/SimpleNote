@@ -230,8 +230,8 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun deleteImage(index: Int){
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteImage(index: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
             var notes = currentNote.value
             val contents = notes.contents
                 .map { it.copy(isFocus = false) }

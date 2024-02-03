@@ -95,7 +95,7 @@ class ContentManager
     fun deleteImage(path: String) {
         try {
             File(path).deleteOnExit()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

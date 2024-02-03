@@ -39,7 +39,7 @@ import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun SkLoadingWheel(
+fun NoteLoadingWheel(
     contentDesc: String,
     modifier: Modifier = Modifier,
 ) {
@@ -131,7 +131,7 @@ fun SkOverlayLoadingWheel(
         modifier = modifier
             .size(60.dp),
     ) {
-        SkLoadingWheel(
+        NoteLoadingWheel(
             contentDesc = contentDesc,
         )
     }
@@ -142,7 +142,7 @@ fun SkOverlayLoadingWheel(
 fun NiaLoadingWheelPreview() {
     SimpleNoteTheme {
         Surface {
-            SkLoadingWheel(contentDesc = "LoadingWheel")
+            NoteLoadingWheel(contentDesc = "LoadingWheel")
         }
     }
 }

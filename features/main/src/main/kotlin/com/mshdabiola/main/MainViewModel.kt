@@ -9,8 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.mshdabiola.data.repository.NoteRepository
 import com.mshdabiola.data.repository.UserDataRepository
 import com.mshdabiola.model.DarkThemeConfig
-import com.mshdabiola.ui.NoteUiState
-import com.mshdabiola.ui.asNoteUiState
+import com.mshdabiola.model.Note
+import com.mshdabiola.model.Type
+import com.mshdabiola.ui.MainNoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -36,8 +37,8 @@ class MainViewModel @Inject constructor(
             .map { notes ->
                 MainUiState.Success(
                     notes
-                        .filter { it.title.isNotBlank() || it.contents.all { it.content.isNotBlank() } }
-                        .map { it.asNoteUiState() }
+                        .filter { note -> note.title.isNotBlank() || note.contents.any { it.content.isNotBlank() } }
+                        .map { processNote(it) }
                         .toImmutableList(),
                 )
             }
@@ -55,14 +56,14 @@ class MainViewModel @Inject constructor(
             initialValue = false,
         )
 
-    private val searchNote = MutableStateFlow(emptyList<NoteUiState>().toImmutableList())
+    private val searchNote = MutableStateFlow(emptyList<MainNoteUiState>().toImmutableList())
     val searchState = searchNote.asStateFlow()
 
     var job: Job? = null
     fun onSearch(text: String) {
         if (text.isBlank()) {
             searchNote.update {
-                emptyList<NoteUiState>().toImmutableList()
+                emptyList<MainNoteUiState>().toImmutableList()
             }
         } else {
             job?.cancel()
@@ -70,16 +71,21 @@ class MainViewModel @Inject constructor(
                 val allNotes = noteRepository
                     .getAll()
                     .first()
-                    .map { it.asNoteUiState() }
 
                 val notes = if (text.isNotBlank()) {
                     allNotes
                         .filter {
-                            it.title.contains(text, true) || it.contents.any { it.content.contains(text, true) } //
+                            it.title.contains(text, true) || it.contents.any {
+                                it.content.contains(
+                                    text,
+                                    true,
+                                )
+                            } //
                         }
                 } else {
                     allNotes
                 }
+                    .map { processNote(it) }
 
                 searchNote.update {
                     notes.toImmutableList()
@@ -96,5 +102,41 @@ class MainViewModel @Inject constructor(
                 userDataRepository.setDarkThemeConfig(DarkThemeConfig.DARK)
             }
         }
+    }
+
+    private fun processNote(note: Note): MainNoteUiState {
+        val title = when {
+            note.title.isNotBlank() -> note.title
+            note.contents.any { it.type != Type.IMAGE && it.content.isNotBlank() } -> {
+                note.contents.first { it.content.isNotBlank() }.content
+            }
+
+            else -> "Picture note"
+        }
+
+        val content = when {
+            note.title.isBlank() -> null
+            note.contents.any { it.type != Type.IMAGE && it.content.isNotBlank() } -> {
+                note.contents.first { it.content.isNotBlank() }.content
+            }
+
+            else -> null
+        }
+        val checkNote = if (note.contents.any { it.type == Type.CHECK }) {
+            val check = note.contents.count { it.type == Type.CHECK && it.isCheck }
+            val all = note.contents.count { it.type == Type.CHECK }
+            "$check/$all"
+        } else {
+            null
+        }
+
+        return MainNoteUiState(
+            id = note.id ?: 0,
+            title = title,
+            content = content,
+            checkFraction = checkNote,
+            path = note.contents.firstOrNull { it.type == Type.IMAGE }?.content,
+            createAt = note.createdAtStrng,
+        )
     }
 }

@@ -26,12 +26,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.mshdabiola.model.Type
-import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun NoteUi(
-    noteUiState: NoteUiState,
+    noteUiState: MainNoteUiState,
     onNoteClick: (Long) -> Unit = {},
 ) {
     ListItem(
@@ -40,15 +38,15 @@ fun NoteUi(
             .clickable { onNoteClick(noteUiState.id) },
         headlineContent = {
             Text(
-                text = noteUiState.title.ifBlank { noteUiState.contents[0].content },
+                text = noteUiState.title,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
         },
         supportingContent = {
-            if (noteUiState.title.isNotBlank()) {
+            if (noteUiState.content != null) {
                 Text(
-                    text = noteUiState.contents.getOrNull(0)?.content ?: "",
+                    text = noteUiState.content,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -62,9 +60,9 @@ fun NoteUi(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
 
-                Text(text = noteUiState.createdAtStr)
+                Text(text = noteUiState.createAt)
                 Spacer(modifier = Modifier.width(8.dp))
-                if (noteUiState.contents.any { it.type == Type.CHECK }) {
+                if (noteUiState.checkFraction != null) {
                     Icon(
                         modifier = Modifier.size(16.dp),
 
@@ -74,21 +72,18 @@ fun NoteUi(
                     Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
-                        text = "${
-                            noteUiState.contents.filter { it.type == Type.CHECK && it.isCheck }
-                                .count()
-                        }/${noteUiState.contents.filter { it.type == Type.CHECK }.count()}",
+                        text = noteUiState.checkFraction,
                     )
                 }
             }
         },
         trailingContent = {
-            if (noteUiState.contents.any { it.type == Type.IMAGE }) {
+            if (noteUiState.path != null) {
                 AsyncImage(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .size(64.dp),
-                    model = noteUiState.contents.first { it.type == Type.IMAGE }.content,
+                    model = noteUiState.path,
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                 )
@@ -99,41 +94,19 @@ fun NoteUi(
         shadowElevation = 8.dp,
         tonalElevation = 8.dp,
     )
-
-//    SwipeToDismiss(state = rememberDismissState(),
-//        directions = setOf(DismissDirection.EndToStart),
-//        background = {
-//            Icon(imageVector = Icons.Default.Delete, contentDescription = "delete")
-//        }, dismissContent ={
-//            ListItem(
-//                colors = ListItemDefaults.colors(containerColor = Color.Red),
-//                headlineContent = { Text(text = "Background") })
-//        } )
-//
 }
 
 @Preview
 @Composable
 private fun NoteUiPreview() {
     NoteUi(
-        noteUiState = NoteUiState(
-            id = 4,
-            title = "Geovanni",
-            contents = listOf(
-                NoteItemUiState(
-                    content = "abiola",
-                    type = Type.TEXT,
-                ),
-                NoteItemUiState(
-                    content = "monkshood",
-                    type = Type.TEXT,
-                ),
-                NoteItemUiState(
-                    content = "Dyan",
-                    type = Type.CHECK,
-                ),
-            ).toImmutableList(),
-            createdAtStr = "Friday",
+        noteUiState = MainNoteUiState(
+            id = 3011L,
+            title = "Liam",
+            content = null,
+            checkFraction = null,
+            path = null,
+            createAt = "Roslyn",
         ),
     )
 }

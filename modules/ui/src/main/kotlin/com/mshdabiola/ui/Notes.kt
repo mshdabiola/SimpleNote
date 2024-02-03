@@ -11,7 +11,7 @@ import com.mshdabiola.analytics.LocalAnalyticsHelper
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.noteItem(
-    notes: List<NoteUiState>,
+    notes: List<MainNoteUiState>,
     onClick: (Long) -> Unit = {},
 ) {
     items(
