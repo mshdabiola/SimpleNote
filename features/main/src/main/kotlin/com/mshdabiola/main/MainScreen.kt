@@ -7,6 +7,8 @@ package com.mshdabiola.main
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,18 +23,27 @@ import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.testTag
@@ -53,6 +64,8 @@ import com.mshdabiola.ui.TrackScrollJank
 import com.mshdabiola.ui.noteItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun MainRoute(
@@ -60,11 +73,15 @@ internal fun MainRoute(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
-    val feedState by viewModel.mainUiState.collectAsStateWithLifecycle()
+    val notes by viewModel.mainUiState.collectAsStateWithLifecycle()
+    val searchNote by viewModel.searchState.collectAsStateWithLifecycle()
+
     MainScreen(
-        mainState = feedState,
+        mainState = notes,
+        searchNotes = searchNote,
         modifier = modifier,
         onClick = onClick,
+        onSearch = viewModel::onSearch,
     )
 }
 
@@ -72,6 +89,7 @@ internal fun MainRoute(
 @Composable
 internal fun MainScreen(
     mainState: MainUiState,
+    searchNotes: ImmutableList<NoteUiState>,
     onClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -80,7 +98,8 @@ internal fun MainScreen(
         MainUiState.Loading -> LoadingState(modifier)
         is MainUiState.Success -> if (mainState.noteUiStates.isNotEmpty()) {
             MainList(
-                mainState = mainState.noteUiStates,
+                notes = mainState.noteUiStates,
+                searchNotes = searchNotes,
                 onSearch = onSearch,
                 onNoteClick = onClick,
                 modifier = modifier,
@@ -107,7 +126,8 @@ private fun LoadingState(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun MainList(
-    mainState: ImmutableList<NoteUiState>,
+    notes: ImmutableList<NoteUiState>,
+    searchNotes: ImmutableList<NoteUiState>,
     onNoteClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -117,24 +137,114 @@ private fun MainList(
     var query by remember {
         mutableStateOf("")
     }
+    var active by remember {
+        mutableStateOf(false)
+    }
+    val state = remember {
+        MutableInteractionSource()
+    }
+    val coroutineScope = rememberCoroutineScope()
     val containerColor = MaterialTheme.colorScheme.background
     val contentColor = Color.DarkGray.copy(alpha = 0.6f)
     Column(
         modifier = modifier
             .fillMaxSize(),
     ) {
-        MediumTopAppBar(
-            colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
-            title = {
-                Text(
-                    text = stringResource(id = R.string.features_main_app_name),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            },
-            actions = {
-            },
-        )
+        if (active) {
+            SearchBar(
+                query = query,
+                onQueryChange = {
+                    query = it
+                    onSearch(query)
+                },
+                placeholder = { Text(text = "Search Note") },
+                onSearch = {
+                    onSearch(query)
+                },
+                active = active,
+                onActiveChange = {
+                    active = it
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = {
+                            active = false
+                            query = ""
+                            onSearch(query)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "back",
+                        )
+                    }
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            query = ""
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "clear",
+                        )
+                    }
+                },
+                interactionSource = state,
+            ) {
+
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    state = scrollableState,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .testTag("main:search"),
+                ) {
+
+                    noteItem(
+                        notes = searchNotes,
+                        onClick = onNoteClick,
+                    )
+                    item {
+                        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+                    }
+                }
+            }
+        } else {
+            MediumTopAppBar(
+                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.features_main_app_name),
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+
+
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            active = true
+                            coroutineScope.launch {
+                                delay(1000)
+                                state.emit(PressInteraction.Press(Offset(200f, 10f)))
+                            }
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "search",
+                        )
+                    }
+                },
+            )
+        }
+
+
 
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
@@ -181,7 +291,7 @@ private fun MainList(
 //            }
 
             noteItem(
-                notes = mainState,
+                notes = notes,
                 onClick = onNoteClick,
             )
             item {
@@ -246,7 +356,11 @@ private fun MainListPreview() {
             listOf(
                 NoteUiState(),
 
-            ).toImmutableList(),
+                ).toImmutableList(),
+            searchNotes = listOf(
+                NoteUiState(),
+
+                ).toImmutableList(),
         )
     }
 }
