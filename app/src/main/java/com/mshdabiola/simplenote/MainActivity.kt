@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val splashScreen = installSplashScreen()
+        val splashScreen = installSplashScreen()
         installSplashScreen()
         var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
 
@@ -72,12 +72,12 @@ class MainActivity : ComponentActivity() {
             }
         }
         enableEdgeToEdge()
-//        splashScreen.setKeepOnScreenCondition {
-//            when (uiState) {
-//                MainActivityUiState.Loading -> true
-//                is MainActivityUiState.Success -> false
-//            }
-//        }
+        splashScreen.setKeepOnScreenCondition {
+            when (uiState) {
+                MainActivityUiState.Loading -> true
+                is MainActivityUiState.Success -> false
+            }
+        }
 
         val remoteConfig = Firebase.remoteConfig
         remoteConfig.setConfigSettingsAsync(
@@ -179,7 +179,7 @@ private fun shouldUseAndroidTheme(
     MainActivityUiState.Loading -> false
     is MainActivityUiState.Success -> when (uiState.userData.themeBrand) {
         ThemeBrand.DEFAULT -> false
-        ThemeBrand.ANDROID -> true
+        ThemeBrand.CONTRAST -> true
     }
 }
 

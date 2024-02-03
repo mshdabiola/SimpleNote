@@ -15,18 +15,18 @@ import org.junit.rules.TemporaryFolder
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class SkPreferencesDataSourceTest {
+class SimpleNotePreferencesDataSourceTest {
 
     private val testScope = TestScope(UnconfinedTestDispatcher())
 
-    private lateinit var subject: SkPreferencesDataSource
+    private lateinit var subject: SimpleNotePreferencesDataSource
 
     @get:Rule
     val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
 
     @Before
     fun setup() {
-        subject = SkPreferencesDataSource(
+        subject = SimpleNotePreferencesDataSource(
             tmpFolder.testUserPreferencesDataStore(testScope),
         )
     }
@@ -42,33 +42,6 @@ class SkPreferencesDataSourceTest {
         assertTrue(subject.userData.first().shouldHideOnboarding)
     }
 
-    @Test
-    fun userShouldHideOnboarding_unfollowsLastTopic_shouldHideOnboardingIsFalse() =
-        testScope.runTest {
-            // Given: user completes onboarding by selecting a single topic.
-            subject.setTopicIdFollowed("1", true)
-            subject.setShouldHideOnboarding(true)
-
-            // When: they unfollow that topic.
-            subject.setTopicIdFollowed("1", false)
-
-            // Then: onboarding should be shown again
-            assertFalse(subject.userData.first().shouldHideOnboarding)
-        }
-
-    @Test
-    fun userShouldHideOnboarding_unfollowsAllTopics_shouldHideOnboardingIsFalse() =
-        testScope.runTest {
-            // Given: user completes onboarding by selecting several topics.
-            subject.setFollowedTopicIds(setOf("1", "2"))
-            subject.setShouldHideOnboarding(true)
-
-            // When: they unfollow those topics.
-            subject.setFollowedTopicIds(emptySet())
-
-            // Then: onboarding should be shown again
-            assertFalse(subject.userData.first().shouldHideOnboarding)
-        }
 
     @Test
     fun shouldUseDynamicColorFalseByDefault() = testScope.runTest {

@@ -26,6 +26,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -76,23 +78,28 @@ internal fun MainRoute(
     val notes by viewModel.mainUiState.collectAsStateWithLifecycle()
     val searchNote by viewModel.searchState.collectAsStateWithLifecycle()
 
+    val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
     MainScreen(
         mainState = notes,
         searchNotes = searchNote,
+        isDarkMode =isDarkMode ,
         modifier = modifier,
         onClick = onClick,
         onSearch = viewModel::onSearch,
+        toggleDarkMode = viewModel::toggleDarkMode
     )
 }
 
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 @Composable
 internal fun MainScreen(
+    modifier: Modifier = Modifier,
     mainState: MainUiState,
     searchNotes: ImmutableList<NoteUiState>,
+    isDarkMode : Boolean=false,
     onClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
-    modifier: Modifier = Modifier,
+    toggleDarkMode:()->Unit={}
 ) {
     when (mainState) {
         MainUiState.Loading -> LoadingState(modifier)
@@ -101,7 +108,9 @@ internal fun MainScreen(
                 notes = mainState.noteUiStates,
                 searchNotes = searchNotes,
                 onSearch = onSearch,
+                toggleDarkMode = toggleDarkMode,
                 onNoteClick = onClick,
+                isDarkMode = isDarkMode,
                 modifier = modifier,
             )
         } else {
@@ -126,11 +135,14 @@ private fun LoadingState(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun MainList(
+    modifier: Modifier = Modifier,
     notes: ImmutableList<NoteUiState>,
     searchNotes: ImmutableList<NoteUiState>,
+    isDarkMode : Boolean=false,
     onNoteClick: (Long) -> Unit = {},
     onSearch: (String) -> Unit = {},
-    modifier: Modifier = Modifier,
+    toggleDarkMode:()->Unit={}
+
 ) {
     val scrollableState = rememberLazyListState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "main:list")
@@ -144,8 +156,6 @@ private fun MainList(
         MutableInteractionSource()
     }
     val coroutineScope = rememberCoroutineScope()
-    val containerColor = MaterialTheme.colorScheme.background
-    val contentColor = Color.DarkGray.copy(alpha = 0.6f)
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -239,6 +249,22 @@ private fun MainList(
                             imageVector = Icons.Default.Search,
                             contentDescription = "search",
                         )
+                    }
+                    IconButton(
+                        onClick =toggleDarkMode,
+                    ) {
+                        if (isDarkMode){
+                            Icon(
+                                imageVector = Icons.Default.LightMode,
+                                contentDescription = "light mode",
+                            )
+                        }else{
+                            Icon(
+                                imageVector = Icons.Default.DarkMode,
+                                contentDescription = "dark mode",
+                            )
+                        }
+
                     }
                 },
             )
@@ -353,7 +379,7 @@ private fun LoadingStatePreview() {
 private fun MainListPreview() {
     SimpleNoteTheme {
         MainList(
-            listOf(
+           notes =  listOf(
                 NoteUiState(),
 
                 ).toImmutableList(),

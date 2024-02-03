@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mshdabiola.data.repository.NoteRepository
 import com.mshdabiola.data.repository.UserDataRepository
+import com.mshdabiola.model.DarkThemeConfig
 import com.mshdabiola.ui.NoteUiState
 import com.mshdabiola.ui.asNoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,8 +34,6 @@ class MainViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
 ) : ViewModel() {
 
-    var shouldDisplayUndoBookmark by mutableStateOf(false)
-    private var lastRemovedBookmarkId: String? = null
 
     val mainUiState: StateFlow<MainUiState> =
         noteRepository.getAll()
@@ -51,6 +50,14 @@ class MainViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = MainUiState.Loading,
             )
+    val isDarkMode =userDataRepository
+        .userData
+        .map { it.darkThemeConfig==DarkThemeConfig.DARK }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false,
+        )
 
     private val _searchNote = MutableStateFlow(emptyList<NoteUiState>().toImmutableList())
     val searchState = _searchNote.asStateFlow()
@@ -91,6 +98,17 @@ class MainViewModel @Inject constructor(
 
         }
 
+
+    }
+
+    fun toggleDarkMode(){
+        viewModelScope.launch {
+            if (isDarkMode.value){
+                userDataRepository.setDarkThemeConfig(DarkThemeConfig.LIGHT)
+            }else{
+                userDataRepository.setDarkThemeConfig(DarkThemeConfig.DARK)
+            }
+        }
 
     }
 }
