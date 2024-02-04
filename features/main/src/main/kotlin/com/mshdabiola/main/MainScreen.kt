@@ -155,9 +155,11 @@ private fun MainList(
         topBar = {
             if (active) {
                 NoteSearchBar(
+                    active=active,
                     notes = searchNotes,
-                    onSearch,
-                    onNoteClick,
+                    onSearch = onSearch,
+                    onNoteClick = onNoteClick,
+                    onChangeActive = {active=it}
                 )
             } else {
                 MainTopAppBar(

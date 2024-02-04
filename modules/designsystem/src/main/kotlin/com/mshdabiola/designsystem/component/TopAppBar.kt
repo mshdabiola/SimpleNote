@@ -85,6 +85,7 @@ fun MainTopAppBar(
 @Composable
 fun DetailTopAppBar(
     modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior,
     onBack: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
     onChangeCheckClick: () -> Unit = {},
@@ -92,6 +93,12 @@ fun DetailTopAppBar(
 ) {
     TopAppBar(
         modifier = modifier.testTag("detail:topbar"),
+        colors = TopAppBarDefaults
+            .topAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+        scrollBehavior = scrollBehavior,
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(
@@ -135,7 +142,6 @@ fun DetailTopAppBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
     )
 }
 
@@ -150,5 +156,7 @@ private fun MainTopAppBarPreview() {
 @Preview("Top App Bar")
 @Composable
 private fun DetailTopAppBarPreview() {
-    DetailTopAppBar()
+    DetailTopAppBar(
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+    )
 }

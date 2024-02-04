@@ -22,11 +22,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
@@ -34,6 +37,8 @@ import kotlinx.collections.immutable.ImmutableList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteSearchBar(
+    active:Boolean=false,
+    onChangeActive : (Boolean)->Unit={},
     notes: ImmutableList<MainNoteUiState>,
     onSearch: (String) -> Unit = {},
     onNoteClick: (Long) -> Unit = {},
@@ -41,14 +46,18 @@ fun NoteSearchBar(
     var query by remember {
         mutableStateOf("")
     }
-    var active by remember {
-        mutableStateOf(false)
+
+
+    val focus = remember {
+
+        FocusRequester()
     }
-    val state = remember {
-        MutableInteractionSource()
+    LaunchedEffect(key1 = Unit) {
+        focus.requestFocus()
     }
 
     SearchBar(
+        modifier = Modifier.focusRequester(focus),
         query = query,
         onQueryChange = {
             query = it
@@ -60,12 +69,13 @@ fun NoteSearchBar(
         },
         active = active,
         onActiveChange = {
-            active = it
+           onChangeActive(it)
+
         },
         leadingIcon = {
             IconButton(
                 onClick = {
-                    active = false
+                    onChangeActive(false)
                     query = ""
                     onSearch(query)
                 },
@@ -88,7 +98,6 @@ fun NoteSearchBar(
                 )
             }
         },
-        interactionSource = state,
     ) {
         LazyColumn(
             contentPadding = PaddingValues(16.dp),

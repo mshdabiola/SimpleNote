@@ -6,5 +6,5 @@
 <resources>
     <string name="features_main_empty_error">Your Notepad is Empty</string>
     <string name="features_main_empty_description">Create a new note to get started.</string>
-    <string name="features_main_app_name">Note Pro</string>
+    <string name="features_main_app_name">Notepad Pro</string>
 </resources>

@@ -6,9 +6,15 @@ package com.mshdabiola.detail
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,6 +36,7 @@ import com.mshdabiola.ui.ImageViewer
 import com.mshdabiola.ui.NoteItemUiState
 import com.mshdabiola.ui.NoteUiState
 import com.mshdabiola.ui.TrackScreenViewEvent
+import com.mshdabiola.ui.TrackScrollJank
 import com.mshdabiola.ui.noteUiEdit
 import kotlinx.collections.immutable.toImmutableList
 
@@ -90,12 +97,13 @@ internal fun DetailScreen(
     var showDialog by remember {
         mutableStateOf(false)
     }
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollableState = rememberLazyListState()
+    TrackScrollJank(scrollableState = scrollableState, stateName = "main:detail")
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     var imagePath by remember {
         mutableStateOf<String?>(null)
     }
-    Column(modifier) {
         Scaffold(
             modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             containerColor = Color.Transparent,
@@ -103,6 +111,7 @@ internal fun DetailScreen(
             topBar = {
                 DetailTopAppBar(
                     onBack = back,
+                    scrollBehavior = scrollBehavior,
                     onDeleteClick = {
                         showDialog = true
                     },
@@ -114,7 +123,8 @@ internal fun DetailScreen(
             LazyColumn(
                 modifier = Modifier
                     .padding(it)
-                    .fillMaxWidth(),
+                    .fillMaxSize(),
+                state = scrollableState
             ) {
                 noteUiEdit(
                     noteUiState = currentNoteUiState,
@@ -127,9 +137,12 @@ internal fun DetailScreen(
                     onImageClick = { imagePath = it },
 
                 )
+                item {
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+                }
             }
         }
-    }
+
 
     if (showDialog) {
         DeleteDialog(onDismiss = { showDialog = false }, onDelete = onDeleteNote)
