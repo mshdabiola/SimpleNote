@@ -49,8 +49,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var lazyStats: dagger.Lazy<JankStats>
 
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
+
 
     @Inject
     lateinit var analyticsHelper: AnalyticsHelper
@@ -132,7 +131,6 @@ class MainActivity : ComponentActivity() {
                     disableDynamicTheming = shouldDisableDynamicTheming(uiState),
                 ) {
                     NoteApp(
-                        networkMonitor = networkMonitor,
                         windowSizeClass = calculateWindowSizeClass(this),
                     )
                 }

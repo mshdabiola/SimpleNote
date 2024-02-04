@@ -60,6 +60,7 @@ fun NoteTextField(
         keyboardActions = KeyboardActions { keyboardAction() },
         leadingIcon = leadingIcon,
         maxLines = 1,
+        singleLine = true
     )
 }
 

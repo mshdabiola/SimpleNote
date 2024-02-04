@@ -49,7 +49,6 @@ import com.mshdabiola.simplenote.navigation.NoteNavHost
 @Composable
 fun NoteApp(
     windowSizeClass: WindowSizeClass,
-    networkMonitor: NetworkMonitor,
     appState: SimpleNoteAppState = rememberSimpleNoteAppState(
         windowSizeClass = windowSizeClass,
     ),
