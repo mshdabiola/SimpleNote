@@ -34,6 +34,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -70,48 +71,32 @@ fun NoteItemUi(
     )
     when (noteItemUiState.type) {
         Type.TEXT -> {
-            TextField(
+            NoteTextField(
                 modifier = modifier
-//                    .bringIntoViewRequester(focusRequester2)
+
                     .focusRequester(focusRequester)
+//                    .bringIntoViewRequester(focusRequester2)
                     .fillMaxWidth(),
-
                 value = noteItemUiState.content,
-                onValueChange = { onContentChange(it, index) },
-                placeholder = {
-                    Text(text = "Content")
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    autoCorrect = true,
-                    imeAction = ImeAction.Next,
-                ),
-                keyboardActions = KeyboardActions { addNewItem(index) },
-
-                maxLines = 1,
-            )
+                onValueChange ={ onContentChange(it, index) },
+                placeholder = "Content",
+                imeAction = ImeAction.Next,
+                keyboardAction = { addNewItem(index) }
+                )
         }
 
         Type.CHECK -> {
-            TextField(
+
+            NoteTextField(
                 modifier = modifier
                     .focusRequester(focusRequester)
 //                    .bringIntoViewRequester(focusRequester2)
                     .fillMaxWidth(),
-
                 value = noteItemUiState.content,
-                onValueChange = { onContentChange(it, index) },
-                placeholder = {
-                    Text(text = "Content")
-                },
+                onValueChange ={ onContentChange(it, index) },
+                placeholder = "Content",
+                imeAction = ImeAction.Next,
+                keyboardAction = { addNewItem(index) },
                 leadingIcon = {
                     IconButton(onClick = { onCheckChange(!noteItemUiState.isCheck, index) }) {
                         Icon(
@@ -124,24 +109,11 @@ fun NoteItemUi(
                             contentDescription = "circle",
                             tint = MaterialTheme.colorScheme.primary,
 
-                        )
+                            )
                     }
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    autoCorrect = true,
-                    imeAction = ImeAction.Next,
-                ),
-                keyboardActions = KeyboardActions { addNewItem(index) },
-                maxLines = 1,
+                }
             )
+
         }
 
         Type.IMAGE -> {
@@ -180,6 +152,7 @@ fun LazyListScope.noteUiEdit(
 ) {
     item {
         NoteTextField(
+            modifier = Modifier.testTag("detail:title"),
             value = noteUiState.title,
             onValueChange = onTitleChange,
             placeholder = "Title",
@@ -194,6 +167,7 @@ fun LazyListScope.noteUiEdit(
     ) { index, item ->
         NoteItemUi(
             modifier = Modifier
+                .testTag("detail:content:$index")
                 .onFocusChanged {
                     onFocusChange(it.isFocused, index)
                 },

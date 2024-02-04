@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.mshdabiola.designsystem.theme.LocalBackgroundTheme
 
 @Composable
 fun MainTopAppBar(
@@ -37,10 +38,12 @@ fun MainTopAppBar(
     toggleDarkMode: () -> Unit = {},
     onSearch: () -> Unit = {},
 ) {
+    val bg= LocalBackgroundTheme.current
+
     MediumTopAppBar(
         colors = TopAppBarDefaults
             .mediumTopAppBarColors(
-                containerColor = Color.Transparent,
+                containerColor = bg.color,
                 scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
             ),
         scrollBehavior = scrollBehavior,
@@ -48,7 +51,6 @@ fun MainTopAppBar(
             Text(
                 text = mainText,
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary,
             )
         },
         actions = {

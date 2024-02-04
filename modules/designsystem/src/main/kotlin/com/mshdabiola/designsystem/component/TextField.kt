@@ -6,6 +6,7 @@ package com.mshdabiola.designsystem.component
 
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -29,7 +30,7 @@ fun NoteTextField(
     leadingIcon:
     @Composable()
     (() -> Unit)? = null,
-    textStyle: TextStyle,
+    textStyle: TextStyle = LocalTextStyle.current,
 ) {
     TextField(
         modifier = modifier,
