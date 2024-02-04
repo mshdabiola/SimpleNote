@@ -36,7 +36,7 @@ import com.mshdabiola.data.util.NetworkMonitor
 import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import com.mshdabiola.model.DarkThemeConfig
 import com.mshdabiola.model.ThemeBrand
-import com.mshdabiola.simplenote.ui.SkApp
+import com.mshdabiola.simplenote.ui.NoteApp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
                     .collect()
             }
         }
+
         enableEdgeToEdge()
         splashScreen.setKeepOnScreenCondition {
             when (uiState) {
@@ -86,39 +87,7 @@ class MainActivity : ComponentActivity() {
             },
         )
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-//        remoteConfig.fetchAndActivate()
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//                    val updated = task.result
-//
-//                  val tr=  remoteConfig.getBoolean("theme")
-//                  val name  =remoteConfig.getString("name")
-//
-//                    Timber.e("Config params updated: %s", updated)
-//                    Timber.e("theme $tr name $name")
-//                    Toast.makeText(this, "Fetch and activate succeeded",
-//                        Toast.LENGTH_SHORT).show()
-//                } else {
-//                    Toast.makeText(this, "Fetch failed",
-//                        Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//        remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
-//            override fun onUpdate(configUpdate : ConfigUpdate) {
-//                Timber.e("Updated keys: " + configUpdate.updatedKeys);
-//
-//                if (configUpdate.updatedKeys.contains("name")) {
-//                    remoteConfig.activate().addOnCompleteListener {
-//                        Timber.e("new name ${remoteConfig.getString("name")}")
-//                    }
-//                }
-//            }
-//
-//            override fun onError(error : FirebaseRemoteConfigException) {
-//                Timber.e( "Config update error with code: " + error.code, error)
-//            }
-//        })
+
         FirebaseMessaging.getInstance().token.addOnCompleteListener(
             OnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -162,7 +131,7 @@ class MainActivity : ComponentActivity() {
                     androidTheme = shouldUseAndroidTheme(uiState),
                     disableDynamicTheming = shouldDisableDynamicTheming(uiState),
                 ) {
-                    SkApp(
+                    NoteApp(
                         networkMonitor = networkMonitor,
                         windowSizeClass = calculateWindowSizeClass(this),
                     )
@@ -205,3 +174,36 @@ private fun shouldUseDarkTheme(
 
 private val lightScrim = Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
 private val darkScrim = Color.argb(0x80, 0x1b, 0x1b, 0x1b)
+//        remoteConfig.fetchAndActivate()
+//            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    val updated = task.result
+//
+//                  val tr=  remoteConfig.getBoolean("theme")
+//                  val name  =remoteConfig.getString("name")
+//
+//                    Timber.e("Config params updated: %s", updated)
+//                    Timber.e("theme $tr name $name")
+//                    Toast.makeText(this, "Fetch and activate succeeded",
+//                        Toast.LENGTH_SHORT).show()
+//                } else {
+//                    Toast.makeText(this, "Fetch failed",
+//                        Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//
+//        remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
+//            override fun onUpdate(configUpdate : ConfigUpdate) {
+//                Timber.e("Updated keys: " + configUpdate.updatedKeys);
+//
+//                if (configUpdate.updatedKeys.contains("name")) {
+//                    remoteConfig.activate().addOnCompleteListener {
+//                        Timber.e("new name ${remoteConfig.getString("name")}")
+//                    }
+//                }
+//            }
+//
+//            override fun onError(error : FirebaseRemoteConfigException) {
+//                Timber.e( "Config update error with code: " + error.code, error)
+//            }
+//        })

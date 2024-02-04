@@ -5,7 +5,7 @@
 package com.mshdabiola.data.repository
 
 import com.mshdabiola.common.network.Dispatcher
-import com.mshdabiola.common.network.NiaDispatchers
+import com.mshdabiola.common.network.NoteDispatchers
 import com.mshdabiola.data.repository.model.ContentItemSer
 import com.mshdabiola.data.repository.model.asContentSer
 import com.mshdabiola.data.repository.model.asContents
@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 class DefaultNoteRepository @Inject constructor(
     private val noteDao: NoteDao,
-    @Dispatcher(NiaDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+    @Dispatcher(NoteDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) : NoteRepository {
 
     private val json = Json
@@ -43,7 +43,11 @@ class DefaultNoteRepository @Inject constructor(
     override fun getAll(): Flow<List<Note>> {
         return noteDao
             .getAll()
-            .map { noteEntities -> noteEntities.map { it.asNote(::toList, ::convertDateToText) } }
+            .map { noteEntities ->
+                noteEntities
+                    .map { it.asNote(::toList, ::convertDateToText) }
+                    .reversed()
+            }
             .flowOn(ioDispatcher)
     }
 

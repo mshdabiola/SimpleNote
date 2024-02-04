@@ -14,17 +14,12 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.mshdabiola.data.util.NetworkMonitor
 import com.mshdabiola.ui.TrackDisposableJank
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 @Composable
 fun rememberSimpleNoteAppState(
     windowSizeClass: WindowSizeClass,
-    networkMonitor: NetworkMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): SimpleNoteAppState {
@@ -33,13 +28,11 @@ fun rememberSimpleNoteAppState(
         navController,
         coroutineScope,
         windowSizeClass,
-        networkMonitor,
     ) {
         SimpleNoteAppState(
             navController,
             coroutineScope,
             windowSizeClass,
-            networkMonitor,
         )
     }
 }
@@ -49,25 +42,10 @@ class SimpleNoteAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
     val windowSizeClass: WindowSizeClass,
-    networkMonitor: NetworkMonitor,
 ) {
     val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
-
-//    val shouldShowBottomBar: Boolean
-//        get() = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
-
-//    val shouldShowNavRail: Boolean
-//        get() = !shouldShowBottomBar
-
-    val isOffline = networkMonitor.isOnline
-        .map(Boolean::not)
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false,
-        )
 }
 
 @Composable

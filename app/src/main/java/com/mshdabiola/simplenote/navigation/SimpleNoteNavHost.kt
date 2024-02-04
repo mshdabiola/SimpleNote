@@ -14,9 +14,8 @@ import com.mshdabiola.main.navigation.mainScreen
 import com.mshdabiola.simplenote.ui.SimpleNoteAppState
 
 @Composable
-fun SkNavHost(
+fun NoteNavHost(
     appState: SimpleNoteAppState,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     startDestination: String = MAIN_ROUTE,
 ) {
@@ -27,6 +26,6 @@ fun SkNavHost(
         modifier = modifier,
     ) {
         mainScreen(onClicked = navController::navigateToDetail)
-        detailScreen(onShowSnackbar, navController::popBackStack)
+        detailScreen(navController::popBackStack)
     }
 }

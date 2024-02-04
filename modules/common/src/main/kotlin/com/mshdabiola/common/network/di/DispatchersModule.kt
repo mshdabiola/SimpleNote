@@ -5,8 +5,8 @@
 package com.mshdabiola.common.network.di
 
 import com.mshdabiola.common.network.Dispatcher
-import com.mshdabiola.common.network.NiaDispatchers.Default
-import com.mshdabiola.common.network.NiaDispatchers.IO
+import com.mshdabiola.common.network.NoteDispatchers.Default
+import com.mshdabiola.common.network.NoteDispatchers.IO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

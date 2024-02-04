@@ -36,7 +36,7 @@ import kotlin.math.tan
  * @param content The background content.
  */
 @Composable
-fun SkBackground(
+fun NoteBackground(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -139,7 +139,7 @@ annotation class ThemePreviews
 @Composable
 fun BackgroundDefault() {
     SimpleNoteTheme(disableDynamicTheming = true) {
-        SkBackground(Modifier.size(100.dp), content = {})
+        NoteBackground(Modifier.size(100.dp), content = {})
     }
 }
 
@@ -147,7 +147,7 @@ fun BackgroundDefault() {
 @Composable
 fun BackgroundDynamic() {
     SimpleNoteTheme(disableDynamicTheming = false) {
-        SkBackground(Modifier.size(100.dp), content = {})
+        NoteBackground(Modifier.size(100.dp), content = {})
     }
 }
 
@@ -155,7 +155,7 @@ fun BackgroundDynamic() {
 @Composable
 fun BackgroundAndroid() {
     SimpleNoteTheme(androidTheme = true) {
-        SkBackground(Modifier.size(100.dp), content = {})
+        NoteBackground(Modifier.size(100.dp), content = {})
     }
 }
 

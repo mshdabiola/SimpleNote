@@ -20,15 +20,11 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -37,32 +33,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mshdabiola.data.util.NetworkMonitor
+import com.mshdabiola.designsystem.component.NoteBackground
 import com.mshdabiola.designsystem.component.SimpleNoteGradientBackground
-import com.mshdabiola.designsystem.component.SkBackground
 import com.mshdabiola.designsystem.theme.GradientColors
 import com.mshdabiola.designsystem.theme.LocalGradientColors
 import com.mshdabiola.detail.navigation.navigateToDetail
 import com.mshdabiola.main.navigation.MAIN_ROUTE
-import com.mshdabiola.simplenote.navigation.SkNavHost
+import com.mshdabiola.simplenote.navigation.NoteNavHost
 
 @OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3Api::class,
 )
 @Composable
-fun SkApp(
+fun NoteApp(
     windowSizeClass: WindowSizeClass,
     networkMonitor: NetworkMonitor,
     appState: SimpleNoteAppState = rememberSimpleNoteAppState(
-        networkMonitor = networkMonitor,
         windowSizeClass = windowSizeClass,
     ),
 ) {
     val shouldShowGradientBackground = false
 
-    SkBackground {
+    NoteBackground {
         SimpleNoteGradientBackground(
             gradientColors = if (shouldShowGradientBackground) {
                 LocalGradientColors.current
@@ -71,19 +65,6 @@ fun SkApp(
             },
         ) {
             val snackbarHostState = remember { SnackbarHostState() }
-
-            val isOffline by appState.isOffline.collectAsStateWithLifecycle()
-
-            // If user is not connected to the internet show a snack bar to inform them.
-            val notConnectedMessage = "Not connected"
-            LaunchedEffect(isOffline) {
-                if (isOffline) {
-                    snackbarHostState.showSnackbar(
-                        message = notConnectedMessage,
-                        duration = Indefinite,
-                    )
-                }
-            }
 
             Scaffold(
                 modifier = Modifier.semantics {
@@ -120,13 +101,7 @@ fun SkApp(
                             WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
                         ),
                 ) {
-                    SkNavHost(appState = appState, onShowSnackbar = { message, action ->
-                        snackbarHostState.showSnackbar(
-                            message = message,
-                            actionLabel = action,
-                            duration = SnackbarDuration.Short,
-                        ) == SnackbarResult.ActionPerformed
-                    })
+                    NoteNavHost(appState = appState)
                 }
             }
         }

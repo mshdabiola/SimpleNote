@@ -4,5 +4,5 @@
 
 -->
 <resources>
-<!--    <string name="modules_designsystem_note">Note</string>-->
+    <color name="ic_launcher_background">#7BB1D4</color>
 </resources>

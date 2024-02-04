@@ -22,19 +22,9 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -58,10 +48,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mshdabiola.designsystem.component.MainTopAppBar
 import com.mshdabiola.designsystem.component.NoteLoadingWheel
 import com.mshdabiola.designsystem.theme.LocalTintTheme
 import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import com.mshdabiola.ui.MainNoteUiState
+import com.mshdabiola.ui.NoteSearchBar
 import com.mshdabiola.ui.TrackScreenViewEvent
 import com.mshdabiola.ui.TrackScrollJank
 import com.mshdabiola.ui.noteItem
@@ -129,7 +121,7 @@ private fun LoadingState(modifier: Modifier = Modifier) {
             modifier = modifier
                 .align(Alignment.Center)
                 .testTag("main:loading"),
-            contentDesc = stringResource(id = R.string.features_main_loading),
+            contentDesc = "main loading",
         )
     }
 }
@@ -147,9 +139,7 @@ private fun MainList(
 ) {
     val scrollableState = rememberLazyListState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "main:list")
-    var query by remember {
-        mutableStateOf("")
-    }
+
     var active by remember {
         mutableStateOf(false)
     }
@@ -160,108 +150,26 @@ private fun MainList(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             if (active) {
-                SearchBar(
-                    query = query,
-                    onQueryChange = {
-                        query = it
-                        onSearch(query)
-                    },
-                    placeholder = { Text(text = "Search Note") },
-                    onSearch = {
-                        onSearch(query)
-                    },
-                    active = active,
-                    onActiveChange = {
-                        active = it
-                    },
-                    leadingIcon = {
-                        IconButton(
-                            onClick = {
-                                active = false
-                                query = ""
-                                onSearch(query)
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "back",
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = {
-                                query = ""
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "clear",
-                            )
-                        }
-                    },
-                    interactionSource = state,
-                ) {
-                    LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        state = scrollableState,
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .testTag("main:search"),
-                    ) {
-                        noteItem(
-                            notes = searchNotes,
-                            onClick = onNoteClick,
-                        )
-                        item {
-                            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
-                        }
-                    }
-                }
+                NoteSearchBar(
+                    notes = searchNotes,
+                    onSearch,
+                    onNoteClick,
+                )
             } else {
-                MediumTopAppBar(
-                    colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent, scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer),
+                MainTopAppBar(
                     scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.features_main_app_name),
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = {
-                                active = true
-                                coroutineScope.launch {
-                                    delay(1000)
-                                    state.emit(PressInteraction.Press(Offset(200f, 10f)))
-                                }
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "search",
-                            )
-                        }
-                        IconButton(
-                            onClick = toggleDarkMode,
-                        ) {
-                            if (isDarkMode) {
-                                Icon(
-                                    imageVector = Icons.Default.LightMode,
-                                    contentDescription = "light mode",
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Default.DarkMode,
-                                    contentDescription = "dark mode",
-                                )
-                            }
+                    mainText = stringResource(id = R.string.features_main_app_name),
+                    isDarkMode = isDarkMode,
+                    toggleDarkMode = toggleDarkMode,
+                    onSearch = {
+                        active = true
+                        coroutineScope.launch {
+                            delay(1000)
+                            state.emit(PressInteraction.Press(Offset(200f, 10f)))
                         }
                     },
                 )
@@ -301,7 +209,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         val iconTint = LocalTintTheme.current.iconTint
         Image(
             modifier = Modifier.fillMaxWidth(),
-            painter = painterResource(id = R.drawable.empty_note),
+            painter = painterResource(id = R.drawable.features_main_empty_note),
             colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
             contentDescription = null,
         )

@@ -21,6 +21,9 @@ dependencies {
     api(project(":modules:designsystem"))
     api(project(":modules:model"))
 
+
+    implementation(libs.telephoto.zoomable.image)
+
     implementation(libs.androidx.browser)
     implementation(libs.coil.kt)
     implementation(libs.coil.kt.compose)
