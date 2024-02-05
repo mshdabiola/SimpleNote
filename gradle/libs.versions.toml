@@ -84,7 +84,7 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 jacoco = "0.8.7"
-truth = "1.1.5"
+truth = "1.4.0"
 dependencyGuard = "0.4.3"
 
 telephoto = "0.7.1"
