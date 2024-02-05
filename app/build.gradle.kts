@@ -25,8 +25,8 @@ android {
 
     defaultConfig {
         applicationId = "com.mshdabiola.simplenote"
-        versionCode = 1
-        versionName = "0.0.3" // X.Y.Z; X = Major, Y = minor, Z = Patch level
+        versionCode = 2
+        versionName = "0.0.4" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         // Custom test runner to set up Hilt dependency graph
         testInstrumentationRunner = "com.mshdabiola.testing.TestRunner"
