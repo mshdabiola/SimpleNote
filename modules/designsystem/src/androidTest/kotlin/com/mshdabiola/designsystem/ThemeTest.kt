@@ -10,6 +10,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -17,25 +18,21 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import com.mshdabiola.designsystem.theme.BackgroundTheme
 import com.mshdabiola.designsystem.theme.DarkAndroidBackgroundTheme
-import com.mshdabiola.designsystem.theme.DarkAndroidColorScheme
 import com.mshdabiola.designsystem.theme.DarkAndroidGradientColors
-import com.mshdabiola.designsystem.theme.DarkDefaultColorScheme
 import com.mshdabiola.designsystem.theme.GradientColors
 import com.mshdabiola.designsystem.theme.LightAndroidBackgroundTheme
-import com.mshdabiola.designsystem.theme.LightAndroidColorScheme
 import com.mshdabiola.designsystem.theme.LightAndroidGradientColors
-import com.mshdabiola.designsystem.theme.LightDefaultColorScheme
 import com.mshdabiola.designsystem.theme.LocalBackgroundTheme
 import com.mshdabiola.designsystem.theme.LocalGradientColors
 import com.mshdabiola.designsystem.theme.LocalTintTheme
-import com.mshdabiola.designsystem.theme.SkTheme
+import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import com.mshdabiola.designsystem.theme.TintTheme
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 
 /**
- * Tests [SkTheme] using different combinations of the theme mode parameters:
+ * Tests [SimpleNoteTheme] using different combinations of the theme mode parameters:
  * darkTheme, disableDynamicTheming, and androidTheme.
  *
  * It verifies that the various composition locals — [MaterialTheme], [LocalGradientColors] and
@@ -50,12 +47,12 @@ class ThemeTest {
     @Test
     fun darkThemeFalse_dynamicColorFalse_androidThemeFalse() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = false,
                 disableDynamicTheming = true,
                 androidTheme = false,
             ) {
-                val colorScheme = LightDefaultColorScheme
+                val colorScheme = lightColorScheme()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val gradientColors = defaultGradientColors(colorScheme)
                 assertEquals(gradientColors, LocalGradientColors.current)
@@ -70,12 +67,12 @@ class ThemeTest {
     @Test
     fun darkThemeTrue_dynamicColorFalse_androidThemeFalse() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = true,
                 disableDynamicTheming = true,
                 androidTheme = false,
             ) {
-                val colorScheme = DarkDefaultColorScheme
+                val colorScheme = lightColorScheme()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val gradientColors = defaultGradientColors(colorScheme)
                 assertEquals(gradientColors, LocalGradientColors.current)
@@ -90,7 +87,7 @@ class ThemeTest {
     @Test
     fun darkThemeFalse_dynamicColorTrue_androidThemeFalse() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = false,
                 disableDynamicTheming = false,
                 androidTheme = false,
@@ -110,7 +107,7 @@ class ThemeTest {
     @Test
     fun darkThemeTrue_dynamicColorTrue_androidThemeFalse() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = true,
                 disableDynamicTheming = false,
                 androidTheme = false,
@@ -130,12 +127,12 @@ class ThemeTest {
     @Test
     fun darkThemeFalse_dynamicColorFalse_androidThemeTrue() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = false,
                 disableDynamicTheming = true,
                 androidTheme = true,
             ) {
-                val colorScheme = LightAndroidColorScheme
+                val colorScheme = lightColorScheme()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val gradientColors = LightAndroidGradientColors
                 assertEquals(gradientColors, LocalGradientColors.current)
@@ -150,12 +147,12 @@ class ThemeTest {
     @Test
     fun darkThemeTrue_dynamicColorFalse_androidThemeTrue() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = true,
                 disableDynamicTheming = true,
                 androidTheme = true,
             ) {
-                val colorScheme = DarkAndroidColorScheme
+                val colorScheme = lightColorScheme()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val gradientColors = DarkAndroidGradientColors
                 assertEquals(gradientColors, LocalGradientColors.current)
@@ -170,12 +167,12 @@ class ThemeTest {
     @Test
     fun darkThemeFalse_dynamicColorTrue_androidThemeTrue() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = false,
                 disableDynamicTheming = false,
                 androidTheme = true,
             ) {
-                val colorScheme = LightAndroidColorScheme
+                val colorScheme = lightColorScheme()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val gradientColors = LightAndroidGradientColors
                 assertEquals(gradientColors, LocalGradientColors.current)
@@ -190,12 +187,12 @@ class ThemeTest {
     @Test
     fun darkThemeTrue_dynamicColorTrue_androidThemeTrue() {
         composeTestRule.setContent {
-            SkTheme(
+            SimpleNoteTheme(
                 darkTheme = true,
                 disableDynamicTheming = false,
                 androidTheme = true,
             ) {
-                val colorScheme = DarkAndroidColorScheme
+                val colorScheme = lightColorScheme()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val gradientColors = DarkAndroidGradientColors
                 assertEquals(gradientColors, LocalGradientColors.current)
@@ -210,13 +207,13 @@ class ThemeTest {
     @Composable
     private fun dynamicLightColorSchemeWithFallback(): ColorScheme = when {
         SDK_INT >= VERSION_CODES.S -> dynamicLightColorScheme(LocalContext.current)
-        else -> LightDefaultColorScheme
+        else -> lightColorScheme()
     }
 
     @Composable
     private fun dynamicDarkColorSchemeWithFallback(): ColorScheme = when {
         SDK_INT >= VERSION_CODES.S -> dynamicDarkColorScheme(LocalContext.current)
-        else -> DarkDefaultColorScheme
+        else -> lightColorScheme()
     }
 
     private fun emptyGradientColors(colorScheme: ColorScheme): GradientColors =

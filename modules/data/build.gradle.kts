@@ -24,12 +24,11 @@ dependencies {
     api(project(":modules:common"))
     api(project(":modules:database"))
     api(project(":modules:datastore"))
-    api(project(":modules:network"))
 
     implementation(project(":modules:analytics"))
 
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(project(":modules:testing"))
 //    testImplementation(project(":modules:datastore"))
 

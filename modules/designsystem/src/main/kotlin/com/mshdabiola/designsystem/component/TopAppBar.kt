@@ -6,62 +6,80 @@
 
 package com.mshdabiola.designsystem.component
 
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.mshdabiola.designsystem.R
-import com.mshdabiola.designsystem.icon.SkIcons
+import com.mshdabiola.designsystem.theme.LocalBackgroundTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SkTopAppBar(
-    @StringRes titleRes: Int,
-    navigationIcon: ImageVector,
-    navigationIconContentDescription: String,
-    actionIcon: ImageVector,
-    actionIconContentDescription: String,
-    modifier: Modifier = Modifier,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
-    onNavigationClick: () -> Unit = {},
-    onActionClick: () -> Unit = {},
+fun MainTopAppBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    mainText: String = "Notepad Pro",
+    isDarkMode: Boolean = true,
+    toggleDarkMode: () -> Unit = {},
+    onSearch: () -> Unit = {},
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(id = titleRes)) },
-        navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = navigationIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+    val bg= LocalBackgroundTheme.current
+
+    MediumTopAppBar(
+        colors = TopAppBarDefaults
+            .mediumTopAppBarColors(
+                containerColor = bg.color,
+                scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+        scrollBehavior = scrollBehavior,
+        title = {
+            Text(
+                text = mainText,
+                style = MaterialTheme.typography.headlineLarge,
+            )
         },
         actions = {
-            IconButton(onClick = onActionClick) {
+            IconButton(
+                modifier = Modifier.testTag("main:topbar:search"),
+                onClick = onSearch,
+            ) {
                 Icon(
-                    imageVector = actionIcon,
-                    contentDescription = actionIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "search",
                 )
             }
+            IconButton(
+                modifier = Modifier.testTag("main:topbar:darkmode"),
+                onClick = toggleDarkMode,
+            ) {
+                if (isDarkMode) {
+                    Icon(
+                        imageVector = Icons.Default.LightMode,
+                        contentDescription = "light mode",
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.DarkMode,
+                        contentDescription = "dark mode",
+                    )
+                }
+            }
         },
-        colors = colors,
-        modifier = modifier.testTag("skTopAppBar"),
     )
 }
 
@@ -69,53 +87,81 @@ fun SkTopAppBar(
 @Composable
 fun DetailTopAppBar(
     modifier: Modifier = Modifier,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-    onNavigationClick: () -> Unit = {},
+    scrollBehavior: TopAppBarScrollBehavior,
+    onBack: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
+    onChangeCheckClick: () -> Unit = {},
+    onAddImageClick: () -> Unit = {},
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(id = R.string.modules_designsystem_note)) },
+    TopAppBar(
+        modifier = modifier.testTag("detail:topbar"),
+        colors = TopAppBarDefaults
+            .topAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+        scrollBehavior = scrollBehavior,
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
+            IconButton(
+                modifier = modifier.testTag("detail:topbar:back"),
+
+                onClick = onBack) {
                 Icon(
-                    modifier = Modifier.testTag("back"),
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "back",
-                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
+        },
+        title = {
         },
         actions = {
-            IconButton(onClick = onDeleteClick) {
+            IconButton(
+                modifier = modifier.testTag("detail:topbar:addimage"),
+
+                onClick = onAddImageClick,
+            ) {
                 Icon(
-                    modifier = Modifier.testTag("delete"),
+                    imageVector = Icons.Default.AddAPhoto,
+                    contentDescription = "add image",
+                )
+            }
+            IconButton(
+                modifier = modifier.testTag("detail:topbar:changecheck"),
+
+                onClick = onChangeCheckClick,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Checklist,
+                    contentDescription = "add checkList",
+                )
+            }
+            IconButton(
+                modifier = modifier.testTag("detail:topbar:delete"),
+
+                onClick = onDeleteClick,
+            ) {
+                Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "delete",
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    tint = MaterialTheme.colorScheme.error,
                 )
             }
         },
-        colors = colors,
-        modifier = modifier.testTag("detailTopAppBar"),
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview("Top App Bar")
 @Composable
-private fun SkTopAppBarPreview() {
-    SkTopAppBar(
-        titleRes = android.R.string.untitled,
-        navigationIcon = SkIcons.Search,
-        navigationIconContentDescription = "Navigation icon",
-        actionIcon = SkIcons.MoreVert,
-        actionIconContentDescription = "Action icon",
-    )
+private fun MainTopAppBarPreview() {
+    MainTopAppBar(scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior())
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview("Top App Bar")
 @Composable
 private fun DetailTopAppBarPreview() {
-    DetailTopAppBar()
+    DetailTopAppBar(
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+    )
 }

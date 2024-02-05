@@ -4,10 +4,7 @@
 
 -->
 <resources>
-    <string name="features_main_title">Saved</string>
-    <string name="features_main_loading">Loading saved…</string>
-    <string name="features_main_empty_error">No saved updates</string>
-    <string name="features_main_empty_description">Updates you save will be stored here\nto read later</string>
-    <string name="features_main_removed">Bookmark removed</string>
-    <string name="features_main_undo">UNDO</string>
+    <string name="features_main_empty_error">Your Notepad is Empty</string>
+    <string name="features_main_empty_description">Create a new note to get started.</string>
+    <string name="features_main_app_name">Notepad Pro</string>
 </resources>

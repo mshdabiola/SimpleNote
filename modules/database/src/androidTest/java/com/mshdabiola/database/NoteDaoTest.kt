@@ -17,12 +17,12 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class NoteDaoTest {
     private lateinit var noteDao: NoteDao
-    private lateinit var db: SkeletonDatabase
+    private lateinit var db: NoteDatabase
 
     @Before
     fun createDb() {
         val content = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(content, SkeletonDatabase::class.java).build()
+        db = Room.inMemoryDatabaseBuilder(content, NoteDatabase::class.java).build()
         noteDao = db.getNoteDao()
     }
 

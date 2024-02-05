@@ -27,10 +27,11 @@ dependencies {
     api(libs.androidx.compose.runtime)
     api(libs.androidx.compose.ui.tooling.preview)
     api(libs.androidx.compose.ui.util)
+    api(libs.kotlinx.collection.immutable)
 
     debugApi(libs.androidx.compose.ui.tooling)
 
-    implementation(libs.coil.kt.compose)
+    api(libs.coil.kt.compose)
 
     testImplementation(libs.androidx.compose.ui.test)
     testImplementation(libs.accompanist.testharness)

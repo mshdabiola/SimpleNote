@@ -87,6 +87,9 @@ jacoco = "0.8.7"
 truth = "1.1.5"
 dependencyGuard = "0.4.3"
 
+telephoto = "0.7.1"
+
+
 
 
 
@@ -191,6 +194,9 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
+
+telephoto-zoomable-image ={ module = "me.saket.telephoto:zoomable-image-coil", version.ref="telephoto" }
+
 
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 robolectric-shadows = { group = "org.robolectric", name = "shadows-framework", version.ref = "robolectric" }

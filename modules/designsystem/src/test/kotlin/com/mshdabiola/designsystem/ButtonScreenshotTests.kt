@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.mshdabiola.designsystem.component.SkButton
-import com.mshdabiola.designsystem.icon.SkIcons
+import com.mshdabiola.designsystem.icon.SimpleNoteIcons
 import com.mshdabiola.testing.util.captureMultiTheme
 import dagger.hilt.android.testing.HiltTestApplication
 import org.junit.Rule
@@ -59,7 +59,7 @@ class ButtonScreenshotTests {
                 SkButton(
                     onClick = {},
                     text = { Text("$description Icon Button") },
-                    leadingIcon = { Icon(imageVector = SkIcons.Add, contentDescription = null) },
+                    leadingIcon = { Icon(imageVector = SimpleNoteIcons.Add, contentDescription = null) },
                 )
             }
         }

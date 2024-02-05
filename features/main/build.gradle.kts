@@ -15,7 +15,6 @@ android {
 
 dependencies {
     implementation(project(":modules:data"))
-    implementation(project(":modules:domain"))
 
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.robolectric)

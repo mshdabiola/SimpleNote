@@ -35,11 +35,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.mshdabiola.designsystem.theme.SkTheme
+import com.mshdabiola.designsystem.theme.SimpleNoteTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun SkLoadingWheel(
+fun NoteLoadingWheel(
     contentDesc: String,
     modifier: Modifier = Modifier,
 ) {
@@ -131,7 +131,7 @@ fun SkOverlayLoadingWheel(
         modifier = modifier
             .size(60.dp),
     ) {
-        SkLoadingWheel(
+        NoteLoadingWheel(
             contentDesc = contentDesc,
         )
     }
@@ -140,9 +140,9 @@ fun SkOverlayLoadingWheel(
 @ThemePreviews
 @Composable
 fun NiaLoadingWheelPreview() {
-    SkTheme {
+    SimpleNoteTheme {
         Surface {
-            SkLoadingWheel(contentDesc = "LoadingWheel")
+            NoteLoadingWheel(contentDesc = "LoadingWheel")
         }
     }
 }
@@ -150,7 +150,7 @@ fun NiaLoadingWheelPreview() {
 @ThemePreviews
 @Composable
 fun NiaOverlayLoadingWheelPreview() {
-    SkTheme {
+    SimpleNoteTheme {
         Surface {
             SkOverlayLoadingWheel(contentDesc = "LoadingWheel")
         }

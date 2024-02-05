@@ -6,25 +6,31 @@ package com.mshdabiola.designsystem.component
 
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SkTextField(
+fun NoteTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit = {},
     placeholder: String? = null,
     imeAction: ImeAction = ImeAction.Done,
     keyboardAction: () -> Unit = {},
-    maxNum: Int = Int.MAX_VALUE,
+    leadingIcon:
+    @Composable()
+    (() -> Unit)? = null,
+    textStyle: TextStyle = LocalTextStyle.current,
 ) {
     TextField(
         modifier = modifier,
@@ -45,6 +51,7 @@ fun SkTextField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
         ),
+        textStyle = textStyle,
 
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = KeyboardCapitalization.Sentences,
@@ -52,13 +59,14 @@ fun SkTextField(
             imeAction = imeAction,
         ),
         keyboardActions = KeyboardActions { keyboardAction() },
-
-        maxLines = maxNum,
+        leadingIcon = leadingIcon,
+        maxLines = 1,
+        singleLine = true
     )
 }
 
 @Preview
 @Composable
 private fun SkTextFieldPreview() {
-    SkTextField(value = "Sk Testing")
+    NoteTextField(value = "Sk Testing", textStyle = MaterialTheme.typography.titleLarge)
 }
