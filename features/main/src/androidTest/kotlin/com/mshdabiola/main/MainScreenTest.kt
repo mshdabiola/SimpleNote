@@ -7,8 +7,10 @@ package com.mshdabiola.main
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import com.mshdabiola.ui.MainNoteUiState
 import com.mshdabiola.ui.MainUiState
 import com.mshdabiola.ui.NoteUiState
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,29 +26,19 @@ class MainScreenTest {
     fun enterText_showsShowText() {
         composeTestRule.setContent {
             MainScreen(
-                mainState = MainUiState.Success(
-                    listOf(
-                        NoteUiState(
-                            id = 5257L,
-                            title = "Jacinto",
-                            description = "Charisma",
-                        ),
-//                    NoteUiState(id = 7450L, title = "Dewayne", description = "Justan"),
-//                    NoteUiState(id = 1352L, title = "Bjorn", description = "Daquan"),
-//                    NoteUiState(id = 4476L, title = "Tonya", description = "Ivelisse"),
-//                    NoteUiState(id = 6520L, title = "Raegan", description = "Katrena"),
-//                    NoteUiState(id = 5136L, title = "Markis", description = "Giles"),
-//                    NoteUiState(id = 6868L, title = "Virgilio", description = "Ashford"),
-//                    NoteUiState(id = 7100L, title = "Larae", description = "Krystyn"),
-//                    NoteUiState(id = 3210L, title = "Nigel", description = "Sergio"),
-//                    NoteUiState(id = 7830L, title = "Kristy", description = "Jacobi"),
-//                    NoteUiState(id = 1020L, title = "Kathlene", description = "Shlomo"),
-//                    NoteUiState(id = 3365L, title = "Corin", description = "Ross"),
-
-                    ),
+                mainState = com.mshdabiola.main.MainUiState.Success(
+                    noteUiStates = listOf(
+                        MainNoteUiState(
+                            id = 6970L,
+                            title = "Tonia",
+                            content = null,
+                            checkFraction = null,
+                            path = null,
+                            createAt = "Chanse"
+                        )
+                    ).toImmutableList()
                 ),
-                onClick = {},
-                onShowSnackbar = { _, _ -> false },
+                searchNotes = emptyList<MainNoteUiState>().toImmutableList()
             )
         }
 

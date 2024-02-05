@@ -98,7 +98,7 @@ internal fun DetailScreen(
         mutableStateOf(false)
     }
     val scrollableState = rememberLazyListState()
-    TrackScrollJank(scrollableState = scrollableState, stateName = "main:detail")
+    TrackScrollJank(scrollableState = scrollableState, stateName = "detail:main")
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     var imagePath by remember {

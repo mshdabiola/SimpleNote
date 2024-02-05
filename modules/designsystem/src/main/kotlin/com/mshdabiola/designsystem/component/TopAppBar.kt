@@ -102,7 +102,10 @@ fun DetailTopAppBar(
             ),
         scrollBehavior = scrollBehavior,
         navigationIcon = {
-            IconButton(onClick = onBack) {
+            IconButton(
+                modifier = modifier.testTag("detail:topbar:back"),
+
+                onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "back",
