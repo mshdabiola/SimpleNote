@@ -62,7 +62,7 @@ playGame = "19.0.0"
 playReview = "2.0.1"
 playUpdate = "2.1.0"
 playCoroutine = "1.7.3"
-firebaseBom = "32.7.1"
+firebaseBom = "32.7.2"
 firebaseAnalytics = "21.2.2"
 firebaseCrashlyticsKts = "18.3.6"
 
