@@ -68,7 +68,7 @@ firebaseCrashlyticsKts = "18.3.6"
 
 firebaseCrashylyticsPlugins = "2.9.9"
 firebasePerfPlugin = "1.4.2"
-googleServicePlugin = "4.4.0"
+googleServicePlugin = "4.4.1"
 ksp = "1.9.22-1.0.17"
 protobufPlugin = "0.9.4"
 
